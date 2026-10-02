@@ -27,6 +27,7 @@ const spreadsheetProjectionUrl = document.querySelector('meta[name="spreadsheet-
 const isDemoMode = new URLSearchParams(window.location.search).get("demo") === "1";
 let currentLineupNames = [];
 let currentProfiles = new Map();
+const playerPickers = new WeakMap();
 let jsonpRequestId = 0;
 let selectedNetPoint = null;
 let currentNetRatingPoints = [];
@@ -59,7 +60,7 @@ function setResultsLoading(isLoading) {
     region.classList.toggle("is-loading", isLoading);
     region.setAttribute("aria-busy", String(isLoading));
   });
-  profileSelect.disabled = isLoading || !currentLineupNames.length;
+  setPlayerPickerDisabled(profileSelect, isLoading || !currentLineupNames.length);
 }
 
 function setProfileDrawerOpen(open) {
@@ -248,6 +249,14 @@ function requestSpreadsheetProjection(players, profilePlayer) {
 
 function normalizePlayerName(value) {
   return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+}
+
+function normalizePlayerSearch(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase()
+    .replace(/[\s'’‘ʼ`´]/gu, "");
 }
 
 function formatLabel(value) {
@@ -972,11 +981,169 @@ function renderPerformance(data) {
   });
 }
 
+function createPlayerPicker(select) {
+  const picker = document.createElement("div");
+  picker.className = "player-picker";
+  const input = document.createElement("input");
+  input.type = "search";
+  input.autocomplete = "off";
+  input.placeholder = "Search players";
+  input.required = true;
+  input.setCustomValidity("Choose a player from the list.");
+  input.setAttribute("role", "combobox");
+  input.setAttribute("aria-autocomplete", "list");
+  input.setAttribute("aria-expanded", "false");
+  input.setAttribute("aria-label", select.name || "Player");
+  const listbox = document.createElement("div");
+  listbox.className = "player-picker-options";
+  listbox.id = `player-picker-${++createPlayerPicker.id}-options`;
+  listbox.setAttribute("role", "listbox");
+  listbox.hidden = true;
+  input.setAttribute("aria-controls", listbox.id);
+  picker.append(input, listbox);
+  select.after(picker);
+  select.hidden = true;
+  select.required = false;
+
+  let players = [];
+  let filteredPlayers = [];
+  let activeIndex = -1;
+
+  const close = () => {
+    listbox.hidden = true;
+    input.setAttribute("aria-expanded", "false");
+    input.removeAttribute("aria-activedescendant");
+    activeIndex = -1;
+  };
+
+  const setActiveOption = index => {
+    if (!filteredPlayers.length) return;
+    activeIndex = (index + filteredPlayers.length) % filteredPlayers.length;
+    const options = listbox.querySelectorAll("[role='option']");
+    options.forEach((option, optionIndex) => {
+      option.classList.toggle("is-active", optionIndex === activeIndex);
+    });
+    const activeOption = options[activeIndex];
+    input.setAttribute("aria-activedescendant", activeOption.id);
+    activeOption.scrollIntoView({ block: "nearest" });
+  };
+
+  const renderOptions = query => {
+    const normalizedQuery = normalizePlayerSearch(query);
+    filteredPlayers = players.filter(player =>
+      normalizePlayerSearch(player.label).includes(normalizedQuery)
+    );
+    activeIndex = -1;
+    input.removeAttribute("aria-activedescendant");
+    listbox.replaceChildren();
+
+    if (!filteredPlayers.length) {
+      const empty = document.createElement("div");
+      empty.className = "player-picker-empty";
+      empty.textContent = "No players match";
+      listbox.append(empty);
+    } else {
+      filteredPlayers.forEach((player, index) => {
+        const option = document.createElement("div");
+        option.className = "player-picker-option";
+        option.id = `${listbox.id}-${index}`;
+        option.setAttribute("role", "option");
+        option.setAttribute("aria-selected", String(select.value === player.value));
+        option.textContent = player.label;
+        option.addEventListener("pointerdown", event => event.preventDefault());
+        option.addEventListener("pointerenter", () => setActiveOption(index));
+        option.addEventListener("click", () => choosePlayer(player));
+        listbox.append(option);
+      });
+    }
+
+    listbox.hidden = false;
+    input.setAttribute("aria-expanded", "true");
+  };
+
+  const choosePlayer = player => {
+    select.value = player.value;
+    input.value = player.label;
+    input.setCustomValidity("");
+    close();
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  };
+
+  input.addEventListener("focus", () => renderOptions(input.value));
+  input.addEventListener("input", () => {
+    select.value = "";
+    input.setCustomValidity("Choose a player from the list.");
+    renderOptions(input.value);
+  });
+  input.addEventListener("keydown", event => {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      if (listbox.hidden) renderOptions(input.value);
+      const nextIndex = activeIndex < 0
+        ? (event.key === "ArrowDown" ? 0 : filteredPlayers.length - 1)
+        : activeIndex + (event.key === "ArrowDown" ? 1 : -1);
+      setActiveOption(nextIndex);
+    } else if (event.key === "Enter" && !listbox.hidden) {
+      event.preventDefault();
+      if (activeIndex >= 0) {
+        choosePlayer(filteredPlayers[activeIndex]);
+      } else if (filteredPlayers.length === 1) {
+        choosePlayer(filteredPlayers[0]);
+      }
+    } else if (event.key === "Escape" && !listbox.hidden) {
+      event.preventDefault();
+      event.stopPropagation();
+      close();
+    }
+  });
+  document.addEventListener("pointerdown", event => {
+    if (!picker.contains(event.target)) close();
+  });
+
+  const pickerApi = {
+    setPlayers(nextPlayers) {
+      players = nextPlayers.map(player => ({ player, label: player.player, value: player.player }));
+    },
+    syncSelection() {
+      input.value = players.find(player => player.value === select.value)?.label || "";
+      input.setCustomValidity(select.value ? "" : "Choose a player from the list.");
+    },
+    setDisabled(disabled) {
+      input.disabled = disabled;
+      if (disabled) close();
+    }
+  };
+
+  players = [...select.options]
+    .filter(option => option.value)
+    .map(option => ({ label: option.text, value: option.value }));
+  pickerApi.syncSelection();
+  input.disabled = select.disabled;
+  playerPickers.set(select, pickerApi);
+  return pickerApi;
+}
+createPlayerPicker.id = 0;
+
+function setPlayerPickerDisabled(select, disabled) {
+  select.disabled = disabled;
+  playerPickers.get(select)?.setDisabled(disabled);
+}
+
 function populateProfileSelector(players, selectedName) {
   profileSelect.replaceChildren();
   players.forEach(player => profileSelect.add(new Option(player.player, player.player)));
   profileSelect.value = selectedName;
-  profileSelect.disabled = false;
+  if (playerPickers.has(profileSelect)) {
+    const picker = playerPickers.get(profileSelect);
+    picker.setPlayers(players);
+    picker.syncSelection();
+  } else {
+    createPlayerPicker(profileSelect);
+    const picker = playerPickers.get(profileSelect);
+    picker.setPlayers(players);
+    picker.syncSelection();
+  }
+  setPlayerPickerDisabled(profileSelect, false);
 }
 
 function renderResults(data, selectedNames, selectedProfile) {
@@ -1038,6 +1205,7 @@ async function initialize() {
         const exactPosition = eligiblePlayers.find(player => player.position === select.name);
         if (exactPosition) select.value = exactPosition.player;
       }
+      createPlayerPicker(select);
     });
     const submitButton = lineupForm.querySelector("button[type='submit']");
     const rosterOnlyMode = !apiBaseUrl && !spreadsheetProjectionUrl && !isDemoMode;
@@ -1063,7 +1231,7 @@ async function updateSelectedProfile(profilePlayer) {
     return;
   }
 
-  profileSelect.disabled = true;
+  setPlayerPickerDisabled(profileSelect, true);
   profileContent.classList.add("is-loading");
   profileContent.setAttribute("aria-busy", "true");
   showStatus("Loading player profile...");
@@ -1081,7 +1249,7 @@ async function updateSelectedProfile(profilePlayer) {
   } finally {
     profileContent.classList.remove("is-loading");
     profileContent.setAttribute("aria-busy", "false");
-    profileSelect.disabled = false;
+    setPlayerPickerDisabled(profileSelect, false);
   }
 }
 
