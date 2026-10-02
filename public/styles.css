@@ -199,8 +199,13 @@ body {
 }
 
 .metric-cell-rated::after {
-  width: var(--rating-fill);
+  width: 0;
   background: var(--rating-color);
+  transition: width 700ms cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+
+.metric-cell-rated.is-animated::after {
+  width: var(--rating-fill);
 }
 
 .metric-cell span,
@@ -541,6 +546,21 @@ th {
   background: #292524;
   color: #fde68a;
   font-size: 0.82rem;
+}
+
+.is-loading {
+  filter: blur(3px);
+  opacity: 0.48;
+  pointer-events: none;
+  user-select: none;
+  transition: filter 160ms ease, opacity 160ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metric-cell-rated::after,
+  .is-loading {
+    transition: none;
+  }
 }
 
 @media (max-width: 900px) {

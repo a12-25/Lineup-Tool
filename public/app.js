@@ -10,6 +10,9 @@ const statusMessage = document.getElementById("statusMessage");
 const demoBanner = document.getElementById("demoBanner");
 const profileSelect = document.getElementById("profileSelect");
 const profileContent = document.getElementById("profileContent");
+const resultRegions = [...document.querySelectorAll(
+  ".lineup-overview-players, #overviewGrid, #ratingGrid, #offenseProjection, #defenseProjection, #usageProjection, .table-scroll, #netRatingChart, #profileContent"
+)];
 const profilePanel = document.getElementById("profilePanel");
 const profileToggle = document.getElementById("mobileProfileToggle");
 const profileClose = document.getElementById("profileClose");
@@ -43,6 +46,14 @@ if (isDemoMode) {
 
 function showStatus(message) {
   statusMessage.textContent = message;
+}
+
+function setResultsLoading(isLoading) {
+  resultRegions.forEach(region => {
+    region.classList.toggle("is-loading", isLoading);
+    region.setAttribute("aria-busy", String(isLoading));
+  });
+  profileSelect.disabled = isLoading || !currentLineupNames.length;
 }
 
 function setProfileDrawerOpen(open) {
@@ -262,13 +273,39 @@ function formatMetric(value, key = "") {
   return String(value);
 }
 
+function animateMetricValue(element, value, key = "") {
+  if (typeof value !== "number" || !Number.isFinite(value) ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    element.textContent = formatMetric(value, key);
+    return;
+  }
+
+  element.textContent = formatMetric(0, key);
+  const startTime = performance.now();
+  const duration = 700;
+  const animate = timestamp => {
+    const progress = Math.min(1, (timestamp - startTime) / duration);
+    const easedProgress = 1 - (1 - progress) ** 3;
+    element.textContent = formatMetric(value * easedProgress, key);
+    if (progress < 1) requestAnimationFrame(animate);
+  };
+  requestAnimationFrame(animate);
+}
+
 const OVERVIEW_SCALE = {
   creationBalance: { min: 0, max: 99, colorStops: [[0, "#d85c5c"], [50, "#d85c5c"], [55, "#df8750"], [60, "#d8c84d"], [78, "#8fba5b"], [99, "#32a77f"]] },
   synergy: { min: 0, max: 99, colorStops: [[0, "#d85c5c"], [50, "#d85c5c"], [55, "#df8750"], [60, "#d8c84d"], [78, "#8fba5b"], [99, "#32a77f"]] },
   versatility: { min: 0, max: 99, colorStops: [[0, "#d85c5c"], [50, "#d85c5c"], [55, "#df8750"], [60, "#d8c84d"], [78, "#8fba5b"], [99, "#32a77f"]] },
   pace: { min: 82, max: 109, colorStops: [[82, "#d85c5c"], [93, "#d85c5c"], [97, "#df8750"], [100, "#d8c84d"], [106, "#62b66b"], [109, "#32a77f"]] }
 };
-const PLAYER_RATING_STOPS = OVERVIEW_SCALE.creationBalance.colorStops;
+const PLAYER_RATING_STOPS = [
+  [0, "#dc2626"],
+  [30, "#dc2626"],
+  [40, "#f97316"],
+  [50, "#eab308"],
+  [70, "#22c55e"],
+  [99, "#22c55e"]
+];
 
 function hexToRgb(hex) {
   const normalized = hex.replace("#", "");
@@ -330,10 +367,15 @@ function renderMetricGrid(container, values) {
     const label = document.createElement("span");
     label.textContent = formatLabel(key);
     const metric = document.createElement("strong");
-    metric.textContent = formatMetric(value, key);
+    animateMetricValue(metric, value, key);
     if (scaleStyle) metric.style.color = scaleStyle.color;
     cell.append(label, metric);
     container.append(cell);
+  });
+  requestAnimationFrame(() => {
+    container.querySelectorAll(".metric-cell-rated").forEach(cell => {
+      cell.classList.add("is-animated");
+    });
   });
 }
 
@@ -369,7 +411,7 @@ function renderRatingProjections(ratings) {
     const title = document.createElement("span");
     title.textContent = label;
     const rating = document.createElement("strong");
-    rating.textContent = formatMetric(value);
+    animateMetricValue(rating, value);
     const source = document.createElement("small");
     source.textContent = "PTS / 100 POSS";
     card.append(title, rating, source);
@@ -945,6 +987,8 @@ async function initialize() {
 async function updateSelectedProfile(profilePlayer) {
   if (!currentLineupNames.length) return;
   profileSelect.disabled = true;
+  profileContent.classList.add("is-loading");
+  profileContent.setAttribute("aria-busy", "true");
   showStatus("Loading player profile...");
   try {
     const data = await apiRequest("lineup", {
@@ -958,6 +1002,8 @@ async function updateSelectedProfile(profilePlayer) {
   } catch (error) {
     showStatus(error.message);
   } finally {
+    profileContent.classList.remove("is-loading");
+    profileContent.setAttribute("aria-busy", "false");
     profileSelect.disabled = false;
   }
 }
@@ -986,6 +1032,7 @@ lineupForm.addEventListener("submit", async event => {
 
   const button = lineupForm.querySelector("button[type='submit']");
   button.disabled = true;
+  setResultsLoading(true);
   showStatus("Calculating lineup...");
   const selectedProfile = selectedPlayers.includes(profileSelect.value)
     ? profileSelect.value
@@ -1001,6 +1048,7 @@ lineupForm.addEventListener("submit", async event => {
   } catch (error) {
     showStatus(error.message);
   } finally {
+    setResultsLoading(false);
     button.disabled = false;
   }
 });
