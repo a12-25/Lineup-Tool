@@ -17,6 +17,7 @@ The frontend and API are separated so the full player dataset can remain in priv
 - [ ] Publish the converted folder contents to `https://github.com/a12-25/Lineup-Tool.git`
 - [x] Add README and project documentation for the public repo
 - [ ] Configure the Azure Function App, private Blob container, managed identity, CORS, and GitHub deploy settings
+- [ ] In repository Settings > Pages, set the build and deployment source to GitHub Actions
 - [ ] Deploy the secret-checked Apps Script projection bridge and configure its URL/key as server-side settings
 - [ ] Verify the source CSV and all original spreadsheet files are excluded before publishing
 

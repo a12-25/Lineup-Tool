@@ -29,7 +29,9 @@ The Apps Script workbook's Players sheet and the private JSON uploaded to Blob m
 3. In GitHub repository settings, add the `AZURE_FUNCTIONAPP_NAME` repository variable and `AZURE_FUNCTIONAPP_PUBLISH_PROFILE` secret. The API workflow deploys the function app from the repository root.
 4. Set the allowed CORS origin on the Function App to the exact GitHub Pages origin (for example, `https://account.github.io`).
 5. Set the `lineup-api-base-url` meta tag in `public/index.html` to `https://<function-app>.azurewebsites.net/api`.
-6. Enable GitHub Pages. The existing Pages workflow publishes only `public/`.
+6. In repository Settings > Pages, set the build and deployment source to **GitHub Actions**. This one-time setup is required before `actions/configure-pages` can find the Pages site. The existing Pages workflow publishes only `public/`.
+
+The API workflow always runs its tests. It deploys only when both `AZURE_FUNCTIONAPP_NAME` and `AZURE_FUNCTIONAPP_PUBLISH_PROFILE` are configured; otherwise it succeeds with an explicit deployment-skipped summary.
 
 ### Early test release
 

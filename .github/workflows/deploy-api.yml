@@ -32,7 +32,25 @@ jobs:
       - name: Run tests and syntax checks
         run: npm test && npm run check
 
+      - name: Check Azure deployment configuration
+        id: azure-config
+        shell: bash
+        env:
+          AZURE_FUNCTIONAPP_NAME: ${{ vars.AZURE_FUNCTIONAPP_NAME }}
+          AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+        run: |
+          if [[ -n "$AZURE_FUNCTIONAPP_NAME" && -n "$AZURE_FUNCTIONAPP_PUBLISH_PROFILE" ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            {
+              echo "### Azure deployment skipped"
+              echo "Tests passed, but Azure deployment settings are not configured. Add the AZURE_FUNCTIONAPP_NAME repository variable and AZURE_FUNCTIONAPP_PUBLISH_PROFILE secret to deploy the API."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Deploy Azure Functions
+        if: steps.azure-config.outputs.ready == 'true'
         uses: Azure/functions-action@v1
         with:
           app-name: ${{ vars.AZURE_FUNCTIONAPP_NAME }}
