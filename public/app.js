@@ -376,8 +376,12 @@ function renderMetricGrid(container, values) {
     const label = document.createElement("span");
     label.textContent = formatLabel(key);
     const metric = document.createElement("strong");
-    animateMetricValue(metric, value, key);
-    if (scaleStyle) metric.style.color = scaleStyle.color;
+    animateMetricValue(metric, value, key, currentValue => {
+      if (!scaleStyle) return;
+      const currentStyle = overviewRatingStyle(key, currentValue);
+      metric.style.color = currentStyle.color;
+      cell.style.setProperty("--rating-color", currentStyle.color);
+    });
     cell.append(label, metric);
     container.append(cell);
   });
@@ -955,9 +959,8 @@ function renderPerformance(data) {
       const cell = document.createElement("td");
       if ((index === 1 || index === 2) && Number.isFinite(Number(value))) {
         cell.className = "performance-rating";
-        animateMetricValue(cell, Number(value), "", currentValue => {
-          cell.style.color = playerRatingColor(currentValue);
-        });
+        cell.textContent = value;
+        cell.style.color = playerRatingColor(value);
       } else {
         cell.textContent = value;
       }
