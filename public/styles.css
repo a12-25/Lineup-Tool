@@ -201,7 +201,7 @@ body {
 .metric-cell-rated::after {
   width: 0;
   background: var(--rating-color);
-  transition: width 700ms cubic-bezier(0.2, 0.75, 0.25, 1);
+  transition: width 1350ms cubic-bezier(0.37, 0, 0.63, 1);
 }
 
 .metric-cell-rated.is-animated::after {
@@ -506,6 +506,13 @@ th {
   font-size: 1.1rem;
 }
 
+.profile-instruction {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
 .profile-content details {
   border-bottom: 1px solid var(--line);
 }
@@ -563,14 +570,39 @@ th {
 
 @media (prefers-reduced-motion: reduce) {
   .metric-cell-rated::after,
-  .is-loading {
+  .is-loading,
+  .profile-panel,
+  .lineup-form button,
+  .mobile-profile-toggle,
+  .profile-close {
     transition: none;
+  }
+}
+
+@media (min-width: 901px) {
+  button:not(:disabled):hover,
+  button:not(:disabled):focus-visible {
+    filter: brightness(1.16);
   }
 }
 
 @media (max-width: 900px) {
   body {
     padding-bottom: 72px;
+  }
+
+  .lineup-form button,
+  .mobile-profile-toggle,
+  .profile-close {
+    transform-origin: center;
+    transition: transform 100ms ease-out;
+    touch-action: manipulation;
+  }
+
+  .lineup-form button:active,
+  .mobile-profile-toggle:active,
+  .profile-close:active {
+    transform: scale(0.95);
   }
 
   .dashboard-layout {
@@ -589,12 +621,13 @@ th {
     background: var(--page);
     box-shadow: -18px 0 48px rgb(0 0 0 / 35%);
     transform: translateX(105%);
-    transition: transform 180ms ease-out;
+    transition: transform 180ms ease-out, visibility 0s linear 180ms;
     visibility: hidden;
   }
 
   .profile-drawer-open .profile-panel {
     transform: translateX(0);
+    transition: transform 180ms ease-out, visibility 0s;
     visibility: visible;
   }
 

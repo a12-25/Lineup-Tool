@@ -278,7 +278,7 @@ function formatMetric(value, key = "") {
   return String(value);
 }
 
-function animateMetricValue(element, value, key = "", onFrame = null) {
+function animateMetricValue(element, value, key = "", onFrame = null, duration = 1000) {
   const renderValue = currentValue => {
     element.textContent = formatMetric(currentValue, key);
     if (onFrame) onFrame(currentValue);
@@ -291,10 +291,9 @@ function animateMetricValue(element, value, key = "", onFrame = null) {
 
   renderValue(0);
   const startTime = performance.now();
-  const duration = 1000;
   const animate = timestamp => {
     const progress = Math.min(1, (timestamp - startTime) / duration);
-    const easedProgress = 1 - (1 - progress) ** 3;
+    const easedProgress = progress * progress * (3 - 2 * progress);
     renderValue(value * easedProgress);
     if (progress < 1) requestAnimationFrame(animate);
   };
@@ -381,13 +380,15 @@ function renderMetricGrid(container, values) {
       const currentStyle = overviewRatingStyle(key, currentValue);
       metric.style.color = currentStyle.color;
       cell.style.setProperty("--rating-color", currentStyle.color);
-    });
+    }, 1350);
     cell.append(label, metric);
     container.append(cell);
   });
   requestAnimationFrame(() => {
-    container.querySelectorAll(".metric-cell-rated").forEach(cell => {
-      cell.classList.add("is-animated");
+    requestAnimationFrame(() => {
+      container.querySelectorAll(".metric-cell-rated").forEach(cell => {
+        cell.classList.add("is-animated");
+      });
     });
   });
 }
@@ -1015,7 +1016,7 @@ function renderResults(data, selectedNames, selectedProfile) {
   currentLineupNames = selectedNames;
   populateProfileSelector(data.players, selectedProfile);
   renderProfile(data.profile);
-  profileToggle.textContent = `Player Profile: ${selectedProfile}`;
+  profileToggle.textContent = "Player Profile";
 }
 
 async function initialize() {
@@ -1059,7 +1060,6 @@ async function updateSelectedProfile(profilePlayer) {
     });
     renderProfile(data.profile);
     showStatus(`${profilePlayer} profile loaded.`);
-    profileToggle.textContent = `Player Profile: ${profilePlayer}`;
   } catch (error) {
     showStatus(error.message);
   } finally {
