@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="lineup-api-base-url" content="" />
+    <title>Lineup Tool</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="page-header">
+        <h1>Lineup Tool</h1>
+        <p>Projected lineup usage and role analysis</p>
+      </header>
+
+      <p id="demoBanner" class="demo-banner" hidden>Manual test mode: all players and results on this page are fictional.</p>
+      <button id="mobileProfileToggle" class="mobile-profile-toggle" type="button" aria-expanded="false" aria-controls="profilePanel">
+        Player Profile
+      </button>
+      <button id="profileBackdrop" class="profile-backdrop" type="button" aria-label="Close player profile" tabindex="-1" hidden></button>
+
+      <div class="dashboard-layout">
+        <div class="main-column">
+          <section class="dashboard-section lineup-section">
+            <div class="section-heading">
+              <h2>Lineup</h2>
+              <p id="statusMessage" role="status" aria-live="polite"></p>
+            </div>
+            <form id="lineupForm" class="lineup-form">
+              <label>PG<select name="PG" required></select></label>
+              <label>SG<select name="SG" required></select></label>
+              <label>SF<select name="SF" required></select></label>
+              <label>PF<select name="PF" required></select></label>
+              <label>C<select name="C" required></select></label>
+              <button type="submit">Submit</button>
+            </form>
+          </section>
+
+          <section class="dashboard-section">
+            <h2>Lineup Overview</h2>
+            <div id="lineupOverviewPlayers" class="lineup-overview-players"></div>
+            <div id="overviewGrid" class="metric-grid metric-grid-four"></div>
+          </section>
+
+          <section class="dashboard-section">
+            <h2>Rating Projections</h2>
+            <div id="ratingGrid" class="rating-grid"></div>
+          </section>
+
+          <div class="projection-columns">
+            <section class="dashboard-section">
+              <h2>Offensive Projections</h2>
+              <div id="offenseProjection" class="metric-list"></div>
+            </section>
+            <section class="dashboard-section">
+              <h2>Defensive Projections</h2>
+              <div id="defenseProjection" class="metric-list"></div>
+            </section>
+          </div>
+
+          <section class="dashboard-section">
+            <h2>Lineup Optimal Usage</h2>
+            <div id="usageProjection" class="usage-grid"></div>
+          </section>
+
+          <section class="dashboard-section performance-section">
+            <h2>Player Performance</h2>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th>Player</th><th>OFF</th><th>DEF</th><th>LOAD</th><th>FIT</th></tr>
+                </thead>
+                <tbody id="performanceTable"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="dashboard-section net-rating-section">
+            <h2>Net Rating Over Time</h2>
+            <div id="netRatingChart" class="net-rating-chart" aria-label="Net rating from minute 0 through minute 24">
+              <svg id="netRatingSvg" viewBox="0 0 960 450" role="group" aria-label="Interactive net rating chart"></svg>
+              <output id="netRatingTooltip" class="net-rating-tooltip" aria-live="polite" hidden></output>
+              <p id="netRatingEmpty" class="empty-state">Submit a lineup to view the 24-minute projection.</p>
+            </div>
+          </section>
+        </div>
+
+        <aside id="profilePanel" class="profile-panel" aria-labelledby="profileHeading" aria-hidden="false">
+          <div class="profile-heading">
+            <div class="profile-title-row">
+              <h2 id="profileHeading">Lineup Player Profile</h2>
+              <button id="profileClose" class="profile-close" type="button">Close</button>
+            </div>
+            <label for="profileSelect">Player</label>
+            <select id="profileSelect" disabled>
+              <option>Select a lineup first</option>
+            </select>
+          </div>
+          <div id="profileContent" class="profile-content">
+            <p class="empty-state">Submit a lineup to view a player profile.</p>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <script defer src="./app.js"></script>
+  </body>
+</html>
