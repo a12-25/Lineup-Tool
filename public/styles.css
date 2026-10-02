@@ -300,6 +300,11 @@ body {
   user-select: none;
 }
 
+.net-rating-axis-trigger {
+  position: absolute;
+  pointer-events: none;
+}
+
 .net-rating-chart .chart-grid {
   stroke: var(--chart-grid);
   stroke-width: 1;

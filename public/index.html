@@ -6,7 +6,7 @@
     <meta name="lineup-api-base-url" content="" />
     <meta name="spreadsheet-projection-url" content="https://script.google.com/macros/s/AKfycbx5Hj9GSmV8xgfvvQc5rMlJ_diQGPZUGDN8E-H9n1RngBM_otVOta7lkVTa6YlmRXGlXg/exec" />
     <title>Lineup Tool</title>
-    <link rel="stylesheet" href="./styles.css?v=rating-motion-20261001" />
+    <link rel="stylesheet" href="./styles.css?v=axis-reveal-20261001" />
   </head>
   <body>
     <main class="page-shell">
@@ -81,6 +81,7 @@
             <h2>Net Rating Over Time</h2>
             <div id="netRatingChart" class="net-rating-chart" aria-label="Net rating from minute 0 through minute 24">
               <svg id="netRatingSvg" viewBox="0 0 960 450" role="group" aria-label="Interactive net rating chart"></svg>
+              <div id="netRatingAxisTrigger" class="net-rating-axis-trigger" aria-hidden="true"></div>
               <output id="netRatingTooltip" class="net-rating-tooltip" aria-live="polite" hidden></output>
               <p id="netRatingEmpty" class="empty-state">Submit a lineup to view the 24-minute projection.</p>
             </div>
@@ -105,6 +106,6 @@
       </div>
     </main>
 
-    <script defer src="./app.js?v=rating-motion-20261001"></script>
+    <script defer src="./app.js?v=axis-reveal-20261001"></script>
   </body>
 </html>

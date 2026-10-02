@@ -21,6 +21,7 @@ const netRatingChart = document.getElementById("netRatingChart");
 const netRatingSvg = document.getElementById("netRatingSvg");
 const netRatingTooltip = document.getElementById("netRatingTooltip");
 const netRatingEmpty = document.getElementById("netRatingEmpty");
+const netRatingAxisTrigger = document.getElementById("netRatingAxisTrigger");
 const apiBaseUrl = document.querySelector('meta[name="lineup-api-base-url"]').content.trim().replace(/\/$/, "");
 const spreadsheetProjectionUrl = document.querySelector('meta[name="spreadsheet-projection-url"]').content.trim();
 const isDemoMode = new URLSearchParams(window.location.search).get("demo") === "1";
@@ -28,6 +29,10 @@ let currentLineupNames = [];
 let jsonpRequestId = 0;
 let selectedNetPoint = null;
 let currentNetRatingPoints = [];
+let chartRevealObserver = null;
+let chartRevealFrame = 0;
+let chartRevealPlayedForLineup = false;
+let chartRevealRects = [];
 const demoPlayers = [
   { player: "Demo Point Guard", position: "PG", slots: ["PG"] },
   { player: "Demo Combo Guard", position: "G", slots: ["PG", "SG"] },
@@ -273,20 +278,24 @@ function formatMetric(value, key = "") {
   return String(value);
 }
 
-function animateMetricValue(element, value, key = "") {
+function animateMetricValue(element, value, key = "", onFrame = null) {
+  const renderValue = currentValue => {
+    element.textContent = formatMetric(currentValue, key);
+    if (onFrame) onFrame(currentValue);
+  };
   if (typeof value !== "number" || !Number.isFinite(value) ||
       window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    element.textContent = formatMetric(value, key);
+    renderValue(value);
     return;
   }
 
-  element.textContent = formatMetric(0, key);
+  renderValue(0);
   const startTime = performance.now();
-  const duration = 700;
+  const duration = 1000;
   const animate = timestamp => {
     const progress = Math.min(1, (timestamp - startTime) / duration);
     const easedProgress = 1 - (1 - progress) ** 3;
-    element.textContent = formatMetric(value * easedProgress, key);
+    renderValue(value * easedProgress);
     if (progress < 1) requestAnimationFrame(animate);
   };
   requestAnimationFrame(animate);
@@ -450,6 +459,43 @@ function chartGeometry() {
   };
 }
 
+function observeChartAxisReveal(geometry) {
+  chartRevealRects = [...netRatingSvg.querySelectorAll(".chart-reveal-rect")];
+  netRatingAxisTrigger.style.left = `${(geometry.left / geometry.width) * 100}%`;
+  netRatingAxisTrigger.style.width = `${(geometry.plotWidth / geometry.width) * 100}%`;
+  netRatingAxisTrigger.style.top = `${(geometry.bottom / CHART_HEIGHT) * 100}%`;
+  netRatingAxisTrigger.style.height = `${((CHART_HEIGHT - geometry.bottom) / CHART_HEIGHT) * 100}%`;
+
+  const reveal = width => chartRevealRects.forEach(rect => rect.setAttribute("width", String(width)));
+  if (chartRevealPlayedForLineup || !("IntersectionObserver" in window) ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    chartRevealPlayedForLineup = true;
+    reveal(geometry.plotWidth);
+    return;
+  }
+
+  reveal(0);
+  chartRevealObserver = new IntersectionObserver(entries => {
+    if (!entries.some(entry => entry.isIntersecting)) return;
+    chartRevealObserver.disconnect();
+    chartRevealObserver = null;
+    chartRevealPlayedForLineup = true;
+    const startedAt = performance.now();
+    const animateReveal = timestamp => {
+      const progress = Math.min(1, (timestamp - startedAt) / 1000);
+      const easedProgress = 1 - (1 - progress) ** 3;
+      reveal(geometry.plotWidth * easedProgress);
+      if (progress < 1) {
+        chartRevealFrame = requestAnimationFrame(animateReveal);
+      } else {
+        chartRevealFrame = 0;
+      }
+    };
+    chartRevealFrame = requestAnimationFrame(animateReveal);
+  }, { threshold: 0 });
+  chartRevealObserver.observe(netRatingAxisTrigger);
+}
+
 function chartPoint(point, geometry) {
   return {
     minute: point.minute,
@@ -581,15 +627,17 @@ function appendSignAreasAndLines(svg, points, geometry) {
   positiveClip.append(svgElement("rect", {
     x: geometry.left,
     y: geometry.top,
-    width: geometry.plotWidth,
-    height: geometry.zero - geometry.top
+    width: 0,
+    height: geometry.zero - geometry.top,
+    class: "chart-reveal-rect"
   }));
   const negativeClip = svgElement("clipPath", { id: "net-rating-negative-clip" });
   negativeClip.append(svgElement("rect", {
     x: geometry.left,
     y: geometry.zero,
-    width: geometry.plotWidth,
-    height: geometry.bottom - geometry.zero
+    width: 0,
+    height: geometry.bottom - geometry.zero,
+    class: "chart-reveal-rect"
   }));
   definitions.append(positiveClip, negativeClip);
   svg.append(definitions);
@@ -697,7 +745,12 @@ function nearestLineValue(svgPoint, points) {
   return nearest;
 }
 
-function renderNetRatingChart(series) {
+function renderNetRatingChart(series, resetForLineup = false) {
+  if (chartRevealObserver) chartRevealObserver.disconnect();
+  chartRevealObserver = null;
+  if (chartRevealFrame) cancelAnimationFrame(chartRevealFrame);
+  chartRevealFrame = 0;
+  if (resetForLineup) chartRevealPlayedForLineup = false;
   netRatingSvg.replaceChildren();
   netRatingTooltip.hidden = true;
   netRatingTooltip.classList.remove("is-pinned");
@@ -729,7 +782,8 @@ function renderNetRatingChart(series) {
       tabindex: "0",
       role: "button",
       "data-point-index": index,
-      "aria-label": `Minute ${point.minute}, net rating ${formatSignedRating(point.value)}`
+      "aria-label": `Minute ${point.minute}, net rating ${formatSignedRating(point.value)}`,
+      "clip-path": `url(#net-rating-${point.value >= 0 ? "positive" : "negative"}-clip)`
     });
     circle.addEventListener("click", event => {
       event.stopPropagation();
@@ -750,6 +804,7 @@ function renderNetRatingChart(series) {
     circle.addEventListener("blur", hideNetRatingTooltip);
     netRatingSvg.append(circle);
   });
+  observeChartAxisReveal(geometry);
 }
 
 netRatingChart.addEventListener("pointermove", event => {
@@ -898,10 +953,13 @@ function renderPerformance(data) {
     ];
     values.forEach((value, index) => {
       const cell = document.createElement("td");
-      cell.textContent = value;
       if ((index === 1 || index === 2) && Number.isFinite(Number(value))) {
         cell.className = "performance-rating";
-        cell.style.color = playerRatingColor(value);
+        animateMetricValue(cell, Number(value), "", currentValue => {
+          cell.style.color = playerRatingColor(currentValue);
+        });
+      } else {
+        cell.textContent = value;
       }
       row.append(cell);
     });
@@ -950,7 +1008,7 @@ function renderResults(data, selectedNames, selectedProfile) {
     defRebounding: "Defensive Rebounding"
   });
   renderPerformance(data);
-  renderNetRatingChart(data.netRatingOverTime);
+  renderNetRatingChart(data.netRatingOverTime, true);
   currentLineupNames = selectedNames;
   populateProfileSelector(data.players, selectedProfile);
   renderProfile(data.profile);
