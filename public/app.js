@@ -26,6 +26,12 @@ const apiBaseUrl = document.querySelector('meta[name="lineup-api-base-url"]').co
 const spreadsheetProjectionUrl = document.querySelector('meta[name="spreadsheet-projection-url"]').content.trim();
 const isDemoMode = new URLSearchParams(window.location.search).get("demo") === "1";
 const themeToggle = document.getElementById("themeToggle");
+const themeCustomizer = document.getElementById("themeCustomizer");
+const themeCustomizeButton = document.getElementById("themeCustomizeButton");
+const themeCustomizerClose = document.getElementById("themeCustomizerClose");
+const primaryColorSwatches = document.getElementById("primaryColorSwatches");
+const secondaryColorSwatches = document.getElementById("secondaryColorSwatches");
+const themeColorsReset = document.getElementById("themeColorsReset");
 let currentLineupNames = [];
 let currentProfiles = new Map();
 let lastSuccessfulLineupKey = null;
@@ -38,6 +44,33 @@ let chartRevealObserver = null;
 let chartRevealFrame = 0;
 let chartRevealPlayedForLineup = false;
 let chartRevealRects = [];
+const themeColors = {
+  primary: "#1d4ed8",
+  secondary: "#0369a1"
+};
+const themeColorOptions = {
+  primary: [
+    ["Blue", "#1d4ed8"],
+    ["Red", "#b91c1c"],
+    ["Green", "#166534"],
+    ["Purple", "#6b21a8"],
+    ["Orange", "#9a3412"],
+    ["Gold", "#854d0e"],
+    ["Teal", "#115e59"],
+    ["Pink", "#9d174d"]
+  ],
+  secondary: [
+    ["Sky", "#0369a1"],
+    ["Navy", "#1e3a8a"],
+    ["Crimson", "#9f1239"],
+    ["Cyan", "#0e7490"],
+    ["Violet", "#7e22ce"],
+    ["Olive", "#4d7c0f"],
+    ["Amber", "#a16207"],
+    ["Slate", "#475569"]
+  ]
+};
+const defaultThemeColors = { ...themeColors };
 
 function setColorTheme(theme, persist = false) {
   const isLightTheme = theme === "light";
@@ -45,6 +78,9 @@ function setColorTheme(theme, persist = false) {
   themeToggle.textContent = isLightTheme ? "Dark mode" : "Light mode";
   themeToggle.setAttribute("aria-label", `Switch to ${isLightTheme ? "dark" : "light"} theme`);
   themeToggle.setAttribute("aria-pressed", String(isLightTheme));
+  document.querySelectorAll("[data-color-mode]").forEach(button => {
+    button.setAttribute("aria-pressed", String(button.dataset.colorMode === (isLightTheme ? "light" : "dark")));
+  });
   if (persist) {
     try {
       localStorage.setItem("lineup-theme", isLightTheme ? "light" : "dark");
@@ -54,15 +90,73 @@ function setColorTheme(theme, persist = false) {
   }
 }
 
+function saveThemeColors() {
+  try {
+    localStorage.setItem("lineup-theme-colors", JSON.stringify(themeColors));
+  } catch {
+    return;
+  }
+}
+
+function renderThemeSwatches(role) {
+  const container = role === "primary" ? primaryColorSwatches : secondaryColorSwatches;
+  container.replaceChildren();
+  themeColorOptions[role].forEach(([name, value]) => {
+    const swatch = document.createElement("button");
+    swatch.className = "theme-swatch";
+    swatch.type = "button";
+    swatch.title = name;
+    swatch.setAttribute("aria-label", `${role} color: ${name}`);
+    swatch.setAttribute("aria-pressed", String(themeColors[role] === value));
+    swatch.style.setProperty("--swatch-color", value);
+    swatch.addEventListener("click", () => {
+      themeColors[role] = value;
+      document.documentElement.style.setProperty(`--${role}-color`, value);
+      saveThemeColors();
+      renderThemeSwatches(role);
+    });
+    container.append(swatch);
+  });
+}
+
 let savedTheme = "dark";
 try {
   savedTheme = localStorage.getItem("lineup-theme") || "dark";
 } catch {
   savedTheme = "dark";
 }
+try {
+  const savedColors = JSON.parse(localStorage.getItem("lineup-theme-colors") || "{}");
+  Object.keys(themeColors).forEach(role => {
+    const isValidColor = themeColorOptions[role].some(([, value]) => value === savedColors[role]);
+    if (isValidColor) themeColors[role] = savedColors[role];
+  });
+} catch {
+  localStorage.removeItem("lineup-theme-colors");
+}
+document.documentElement.style.setProperty("--primary-color", themeColors.primary);
+document.documentElement.style.setProperty("--secondary-color", themeColors.secondary);
+renderThemeSwatches("primary");
+renderThemeSwatches("secondary");
 setColorTheme(savedTheme);
 themeToggle.addEventListener("click", () => {
   setColorTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark", true);
+});
+document.querySelectorAll("[data-color-mode]").forEach(button => {
+  button.addEventListener("click", () => setColorTheme(button.dataset.colorMode, true));
+});
+themeCustomizeButton.addEventListener("click", () => themeCustomizer.showModal());
+themeCustomizerClose.addEventListener("click", () => themeCustomizer.close());
+themeCustomizer.addEventListener("click", event => {
+  if (event.target === themeCustomizer) themeCustomizer.close();
+});
+themeColorsReset.addEventListener("click", () => {
+  Object.assign(themeColors, defaultThemeColors);
+  document.documentElement.style.setProperty("--primary-color", themeColors.primary);
+  document.documentElement.style.setProperty("--secondary-color", themeColors.secondary);
+  saveThemeColors();
+  renderThemeSwatches("primary");
+  renderThemeSwatches("secondary");
 });
 
 const demoPlayers = [

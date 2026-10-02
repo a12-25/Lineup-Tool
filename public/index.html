@@ -6,7 +6,7 @@
     <meta name="lineup-api-base-url" content="" />
     <meta name="spreadsheet-projection-url" content="https://script.google.com/macros/s/AKfycbyMYuoBYbIXgCAdLc-hKXwQllQ_rB6_C2V34cCi7NMVsvg2nHc0ZnoWI5VUu9PoBB8Xxg/exec" />
     <title>Lineup Tool</title>
-    <link rel="stylesheet" href="./styles.css?v=lineup-themes-20261002" />
+    <link rel="stylesheet" href="./styles.css?v=lineup-theme-customizer-20261002" />
   </head>
   <body>
     <main class="page-shell">
@@ -15,7 +15,36 @@
           <h1>Lineup Tool</h1>
           <p>Projected lineup usage and role analysis</p>
         </div>
-        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme" aria-pressed="false">Light mode</button>
+        <div class="theme-controls">
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light theme" aria-pressed="false">Light mode</button>
+          <button id="themeCustomizeButton" class="theme-customize-button" type="button" aria-haspopup="dialog" aria-controls="themeCustomizer">Customize</button>
+        </div>
+        <dialog id="themeCustomizer" class="theme-customizer" aria-labelledby="themeCustomizerTitle">
+          <div class="theme-customizer-content">
+            <div class="theme-customizer-header">
+              <h2 id="themeCustomizerTitle">Customize theme</h2>
+              <button id="themeCustomizerClose" class="theme-customizer-close" type="button">Close</button>
+            </div>
+            <fieldset>
+              <legend>Display mode</legend>
+              <div class="theme-mode-control" role="group" aria-label="Display mode">
+                <button type="button" data-color-mode="dark" aria-pressed="true">Dark</button>
+                <button type="button" data-color-mode="light" aria-pressed="false">Light</button>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Primary color</legend>
+              <div id="primaryColorSwatches" class="theme-swatches"></div>
+            </fieldset>
+            <fieldset>
+              <legend>Secondary color</legend>
+              <div id="secondaryColorSwatches" class="theme-swatches"></div>
+            </fieldset>
+            <div class="theme-customizer-footer">
+              <button id="themeColorsReset" type="button">Reset colors</button>
+            </div>
+          </div>
+        </dialog>
       </header>
 
       <p id="demoBanner" class="demo-banner" hidden>Manual test mode: all players and results on this page are fictional.</p>
@@ -110,6 +139,6 @@
       </div>
     </main>
 
-    <script defer src="./app.js?v=lineup-themes-20261002"></script>
+    <script defer src="./app.js?v=lineup-theme-customizer-20261002"></script>
   </body>
 </html>
