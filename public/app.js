@@ -27,6 +27,7 @@ const spreadsheetProjectionUrl = document.querySelector('meta[name="spreadsheet-
 const isDemoMode = new URLSearchParams(window.location.search).get("demo") === "1";
 let currentLineupNames = [];
 let currentProfiles = new Map();
+let lastSuccessfulLineupKey = null;
 const playerPickers = new WeakMap();
 let jsonpRequestId = 0;
 let selectedNetPoint = null;
@@ -1275,13 +1276,21 @@ lineupForm.addEventListener("submit", async event => {
     return;
   }
 
+  const selectedProfile = selectedPlayers.includes(profileSelect.value)
+    ? profileSelect.value
+    : selectedPlayers[0];
+  const lineupKey = JSON.stringify(selectedPlayers);
+  if (lineupKey === lastSuccessfulLineupKey) {
+    const cachedProfile = currentProfiles.get(normalizePlayerName(selectedProfile));
+    if (cachedProfile) renderProfile(cachedProfile);
+    showStatus("Lineup analysis complete.");
+    return;
+  }
+
   const button = lineupForm.querySelector("button[type='submit']");
   button.disabled = true;
   setResultsLoading(true);
   showStatus("Calculating lineup...");
-  const selectedProfile = selectedPlayers.includes(profileSelect.value)
-    ? profileSelect.value
-    : selectedPlayers[0];
   try {
     const results = await apiRequest("lineup", {
       method: "POST",
@@ -1289,6 +1298,7 @@ lineupForm.addEventListener("submit", async event => {
       body: JSON.stringify({ players: selectedPlayers, profilePlayer: selectedProfile })
     });
     renderResults(results, selectedPlayers, selectedProfile);
+    lastSuccessfulLineupKey = lineupKey;
     showStatus("Lineup analysis complete.");
   } catch (error) {
     showStatus(error.message);
