@@ -235,12 +235,12 @@ body {
 .profile-headshot-frame {
   position: relative;
   display: grid;
-  width: min(100%, 150px);
-  aspect-ratio: 1;
+  width: min(100%, 180px);
+  aspect-ratio: 1.25;
   place-items: center;
   overflow: hidden;
-  margin: 0 auto 16px;
-  border: 2px solid var(--accent);
+  margin: 0 auto;
+  border: 1px solid var(--line);
   border-radius: 4px;
   background: var(--surface);
   color: #e2e8f0;
@@ -590,6 +590,14 @@ th {
   color: var(--muted);
   font-size: 0.78rem;
   line-height: 1.4;
+}
+
+.profile-content {
+  padding-top: 16px;
+}
+
+.profile-content > details:first-of-type summary {
+  padding-top: 16px;
 }
 
 .profile-content details {

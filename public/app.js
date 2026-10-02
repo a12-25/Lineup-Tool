@@ -904,10 +904,7 @@ function renderKeyValues(container, values, labels = {}) {
 function renderProfile(profile) {
   profileContent.replaceChildren();
   if (!profile) {
-    const message = document.createElement("p");
-    message.className = "empty-state";
-    message.textContent = "Profile data is unavailable.";
-    profileContent.append(message);
+    profileContent.append(createPlayerPortrait("", "profile-headshot-frame"));
     return;
   }
 
@@ -1162,24 +1159,15 @@ function setPlayerPickerDisabled(select, disabled) {
   playerPickers.get(select)?.setDisabled(disabled);
 }
 
-function populateProfileSelector(players, selectedName) {
+function populateProfileSelector(players) {
   profileSelect.replaceChildren();
+  profileSelect.add(new Option("Select Player", ""));
   players.forEach(player => profileSelect.add(new Option(player.player, player.player)));
-  profileSelect.value = selectedName;
-  if (playerPickers.has(profileSelect)) {
-    const picker = playerPickers.get(profileSelect);
-    picker.setPlayers(players);
-    picker.syncSelection();
-  } else {
-    createPlayerPicker(profileSelect);
-    const picker = playerPickers.get(profileSelect);
-    picker.setPlayers(players);
-    picker.syncSelection();
-  }
-  setPlayerPickerDisabled(profileSelect, false);
+  profileSelect.value = "";
+  profileSelect.disabled = false;
 }
 
-function renderResults(data, selectedNames, selectedProfile) {
+function renderResults(data, selectedNames) {
   renderLineupOverviewPlayers(data.players);
   renderMetricGrid(overviewGrid, data.overview);
   renderRatingProjections(data.ratingProjections);
@@ -1222,9 +1210,9 @@ function renderResults(data, selectedNames, selectedProfile) {
   if (data.profile) {
     currentProfiles.set(normalizePlayerName(data.profile.player), data.profile);
   }
-  populateProfileSelector(data.players, selectedProfile);
-  renderProfile(currentProfiles.get(normalizePlayerName(selectedProfile)) || data.profile);
-  profileToggle.textContent = "Player Profile";
+  populateProfileSelector(data.players);
+  renderProfile(null);
+  profileToggle.textContent = "Player Profiles";
 }
 
 async function initialize() {
@@ -1292,7 +1280,13 @@ async function updateSelectedProfile(profilePlayer) {
   }
 }
 
-profileSelect.addEventListener("change", () => updateSelectedProfile(profileSelect.value));
+profileSelect.addEventListener("change", () => {
+  if (!profileSelect.value) {
+    renderProfile(null);
+    return;
+  }
+  updateSelectedProfile(profileSelect.value);
+});
 profileToggle.addEventListener("click", () => {
   setProfileDrawerOpen(profileToggle.getAttribute("aria-expanded") !== "true");
 });
@@ -1319,8 +1313,10 @@ lineupForm.addEventListener("submit", async event => {
     : selectedPlayers[0];
   const lineupKey = JSON.stringify(selectedPlayers);
   if (lineupKey === lastSuccessfulLineupKey) {
-    const cachedProfile = currentProfiles.get(normalizePlayerName(selectedProfile));
-    if (cachedProfile) renderProfile(cachedProfile);
+    const cachedProfile = profileSelect.value
+      ? currentProfiles.get(normalizePlayerName(profileSelect.value))
+      : null;
+    renderProfile(cachedProfile || null);
     showStatus("Lineup analysis complete.");
     return;
   }
@@ -1335,7 +1331,7 @@ lineupForm.addEventListener("submit", async event => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ players: selectedPlayers, profilePlayer: selectedProfile })
     });
-    renderResults(results, selectedPlayers, selectedProfile);
+    renderResults(results, selectedPlayers);
     lastSuccessfulLineupKey = lineupKey;
     showStatus("Lineup analysis complete.");
   } catch (error) {
