@@ -28,6 +28,7 @@ const isDemoMode = new URLSearchParams(window.location.search).get("demo") === "
 let currentLineupNames = [];
 let currentProfiles = new Map();
 let lastSuccessfulLineupKey = null;
+let nbaPlayerIds = {};
 const playerPickers = new WeakMap();
 let jsonpRequestId = 0;
 let selectedNetPoint = null;
@@ -260,6 +261,14 @@ function normalizePlayerSearch(value) {
     .replace(/[\s'’‘ʼ`´]/gu, "");
 }
 
+function normalizePlayerIdLookup(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
 function formatLabel(value) {
   return value
     .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
@@ -404,22 +413,43 @@ function renderMetricGrid(container, values) {
   });
 }
 
+function createPlayerPortrait(playerName, className) {
+  const portrait = document.createElement("div");
+  portrait.className = className;
+  portrait.setAttribute("aria-hidden", "true");
+  portrait.textContent = playerName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(part => part[0])
+    .join("")
+    .toUpperCase();
+
+  const playerId = nbaPlayerIds[normalizePlayerIdLookup(playerName)];
+  if (playerId) {
+    const image = document.createElement("img");
+    image.className = "player-headshot";
+    image.alt = "";
+    image.loading = "lazy";
+    image.decoding = "async";
+    image.addEventListener("load", () => portrait.classList.add("is-loaded"), { once: true });
+    image.addEventListener("error", () => {
+      image.remove();
+      portrait.classList.remove("is-loaded");
+    }, { once: true });
+    image.src = `https://cdn.nba.com/headshots/nba/latest/260x190/${playerId}.png`;
+    portrait.append(image);
+  }
+
+  return portrait;
+}
+
 function renderLineupOverviewPlayers(players) {
   lineupOverviewPlayers.replaceChildren();
   players.forEach(player => {
     const item = document.createElement("article");
     item.className = "overview-player";
-    const portrait = document.createElement("div");
-    portrait.className = "portrait-placeholder";
-    portrait.setAttribute("aria-hidden", "true");
-    const initials = player.player
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map(part => part[0])
-      .join("")
-      .toUpperCase();
-    portrait.textContent = initials;
+    const portrait = createPlayerPortrait(player.player, "portrait-placeholder");
     const name = document.createElement("span");
     name.className = "overview-player-name";
     name.textContent = player.player;
@@ -881,6 +911,8 @@ function renderProfile(profile) {
     return;
   }
 
+  profileContent.append(createPlayerPortrait(profile.player, "profile-headshot-frame"));
+
   const sections = [
     ["Bio", profile.bio, {
       position: "Position",
@@ -1197,7 +1229,13 @@ function renderResults(data, selectedNames, selectedProfile) {
 
 async function initialize() {
   try {
-    const players = await apiRequest("players");
+    const [players, playerIdsResponse] = await Promise.all([
+      apiRequest("players"),
+      fetch("./data/nba-player-ids.json").catch(() => null)
+    ]);
+    if (playerIdsResponse?.ok) {
+      nbaPlayerIds = await playerIdsResponse.json().catch(() => ({}));
+    }
     lineupForm.querySelectorAll("select").forEach(select => {
       select.replaceChildren(new Option("Choose a player", ""));
       const eligiblePlayers = players.filter(player => player.slots.includes(select.name));
