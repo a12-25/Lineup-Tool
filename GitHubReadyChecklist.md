@@ -13,13 +13,13 @@ The frontend and API are separated so the full player dataset can remain in priv
 - [x] Keep spreadsheet projection, usage, player-performance, and selected-profile outputs grouped by their sheet sections
 - [x] Color only player performance OFF/DEF ratings using the 0-99 red-to-green scale; keep LOAD/FIT unchanged
 - [x] Add GitHub Pages and Azure Functions deployment workflows
-- [x] Keep generated player JSON out of the public assets and Git
-- [ ] Publish the converted folder contents to `https://github.com/a12-25/Lineup-Tool.git`
+- [x] Keep generated full player JSON out of the public assets and Git
+- [x] Publish the converted folder contents to `https://github.com/a12-25/Lineup-Tool.git`
 - [x] Add README and project documentation for the public repo
 - [ ] Configure the Azure Function App, private Blob container, managed identity, CORS, and GitHub deploy settings
-- [ ] In repository Settings > Pages, set the build and deployment source to GitHub Actions
+- [x] In repository Settings > Pages, set the build and deployment source to GitHub Actions
 - [ ] Deploy the secret-checked Apps Script projection bridge and configure its URL/key as server-side settings
-- [ ] Verify the source CSV and all original spreadsheet files are excluded before publishing
+- [x] Verify the source CSV and original spreadsheet files are excluded from the published converted-folder repository
 
 ## Recommended deployment path
 
@@ -33,10 +33,11 @@ The frontend and API are separated so the full player dataset can remain in priv
 
 - [x] Pages and Functions workflows are present.
 - [x] Full player JSON is excluded from Git and static assets.
-- [ ] Git push to the requested repository. The current workspace has no `.git` directory and Git is unavailable in this environment.
+- [x] Git push to the requested repository as `a12-25`.
+- [x] Publish all 492 player names/positions/eligible slots on GitHub Pages without player stat fields.
 - [ ] Configure Azure Function App, private Blob, and Apps Script projection endpoint. These live services/credentials are not available in this workspace.
 - [ ] Configure `AZURE_FUNCTIONAPP_NAME`, `AZURE_FUNCTIONAPP_PUBLISH_PROFILE`, `SPREADSHEET_PROJECTION_URL`, and `SPREADSHEET_PROJECTION_KEY` in GitHub/Azure.
-- [ ] Set `lineup-api-base-url` to the deployed Function API URL and verify a real-player submission.
+- [ ] Set `lineup-api-base-url` to the deployed Function API URL and verify real-player calculations. Until then, the live site is roster-only with Submit disabled.
 
 ## Important notes
 

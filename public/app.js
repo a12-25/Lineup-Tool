@@ -57,6 +57,14 @@ function setProfileDrawerOpen(open) {
 
 async function apiRequest(path, options = {}) {
   if (isDemoMode && path === "players") return demoPlayers;
+  if (path === "players" && !apiBaseUrl) {
+    const response = await fetch("./data/roster.json");
+    if (!response.ok) throw new Error("The real player roster could not be loaded.");
+    return response.json();
+  }
+  if (path === "lineup" && !apiBaseUrl) {
+    throw new Error("The real-player projection API is not configured yet.");
+  }
   if (isDemoMode && path === "lineup") {
     const { players: names, profilePlayer = names?.[0] } = JSON.parse(options.body || "{}");
     if (!Array.isArray(names) || names.length !== 5 || new Set(names).size !== 5) {
@@ -864,12 +872,6 @@ function renderResults(data, selectedNames, selectedProfile) {
 }
 
 async function initialize() {
-  if (!apiBaseUrl && !isDemoMode) {
-    showStatus("Configure the API base URL before using the lineup tool.");
-    lineupForm.querySelectorAll("select, button").forEach(control => { control.disabled = true; });
-    return;
-  }
-
   try {
     const players = await apiRequest("players");
     lineupForm.querySelectorAll("select").forEach(select => {
@@ -881,7 +883,14 @@ async function initialize() {
         if (exactPosition) select.value = exactPosition.player;
       }
     });
-    showStatus(isDemoMode ? "Fictional sample roster loaded." : `${players.length} players available`);
+    const submitButton = lineupForm.querySelector("button[type='submit']");
+    const rosterOnlyMode = !apiBaseUrl && !isDemoMode;
+    submitButton.disabled = rosterOnlyMode;
+    showStatus(isDemoMode
+      ? "Fictional sample roster loaded."
+      : rosterOnlyMode
+        ? `${players.length} real players loaded. Projection API setup is required to submit lineups.`
+        : `${players.length} players available`);
   } catch (error) {
     showStatus(error.message);
   }

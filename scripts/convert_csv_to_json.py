@@ -35,6 +35,18 @@ script_dir = Path(__file__).resolve().parent
 project_root = script_dir.parent.parent
 source_csv = project_root / "Lineup Tool - Players (1).csv"
 output_json = script_dir.parent / "private" / "players.json"
+roster_json = script_dir.parent / "public" / "data" / "roster.json"
+
+position_slots = {
+    "PG": ["PG"],
+    "G": ["PG", "SG"],
+    "G-F": ["SG", "SF"],
+    "F-G": ["SG", "SF"],
+    "F": ["SF", "PF"],
+    "F-C": ["PF", "C"],
+    "C-F": ["PF", "C"],
+    "C": ["C"],
+}
 
 if not source_csv.exists():
     raise FileNotFoundError(f"Player CSV not found: {source_csv}")
@@ -60,3 +72,20 @@ with source_csv.open("r", encoding="utf-8-sig", newline="") as csv_file:
 output_json.parent.mkdir(parents=True, exist_ok=True)
 output_json.write_text(json.dumps(rows, indent=2), encoding="utf-8")
 print(f"Generated {len(rows)} player records at {output_json}")
+
+public_roster = []
+for row in rows:
+    position = re.sub(r"\s+", "", str(row.get("position") or "").upper())
+    position = re.sub(r"[\/,]", "-", position)
+    position = re.sub(r"[–—]", "-", position)
+    position = re.sub(r"-+", "-", position)
+    public_roster.append({
+        "player": row["player"],
+        "position": row.get("position"),
+        "slots": position_slots.get(position, []),
+    })
+
+public_roster.sort(key=lambda player: player["player"].casefold())
+roster_json.parent.mkdir(parents=True, exist_ok=True)
+roster_json.write_text(json.dumps(public_roster, indent=2), encoding="utf-8")
+print(f"Generated {len(public_roster)} public roster entries at {roster_json}")

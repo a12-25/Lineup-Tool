@@ -5,7 +5,7 @@ This folder contains the web migration of the Google Sheets / Apps Script lineup
 ## What is included
 
 - A modular JavaScript architecture under `src/`
-- A browser frontend under `public/` that receives names, positions, eligible slots, and calculated results only
+- A browser frontend under `public/` with a selector-only roster containing real player names, positions, and eligible slots; statistical results remain behind the API
 - An Azure Functions API that reads full player records from private Blob Storage and gets exact lineup projections from the spreadsheet calculation service
 - A CSV-to-JSON conversion script that writes to the ignored `private/` directory
 - Separate GitHub Pages and Azure Functions deployment workflows
@@ -19,7 +19,7 @@ This folder contains the web migration of the Google Sheets / Apps Script lineup
 5. Set the Function App managed identity's Storage Blob Data Reader role on that container. Configure `PLAYER_DATA_BLOB_URL` as the full URL to `players.json` in the Function App settings.
 6. Copy [apps-script/ProjectionApi.gs](apps-script/ProjectionApi.gs) into the original Apps Script project. In Apps Script Project Settings, add a Script Property named `PROJECTION_API_KEY` with a strong random secret. Deploy it as a web app that runs as the spreadsheet owner and accepts requests from anyone; the endpoint rejects calls without the secret. Do not put this key in the frontend or Git.
 
-The function uses the local ignored `private/players.json` when `PLAYER_DATA_BLOB_URL` is not set, which supports local development. Never add the CSV or generated JSON to Git, a public storage container, or the `public/` directory.
+The function uses the local ignored `private/players.json` when `PLAYER_DATA_BLOB_URL` is not set, which supports local development. The generated `public/data/roster.json` intentionally contains only names, listed positions, and eligible lineup slots so Pages can populate the selectors without publishing stats. Never add the CSV or generated full JSON to Git, a public storage container, or the `public/` directory.
 The Apps Script workbook's Players sheet and the private JSON uploaded to Blob must come from the same player-data export; the roster endpoint and projection endpoint must recognize the same names.
 
 ## Deploy
@@ -35,7 +35,7 @@ The API workflow always runs its tests. It deploys only when both `AZURE_FUNCTIO
 
 ### Early test release
 
-The intended repository is `https://github.com/a12-25/Lineup-Tool.git`. Publish the contents of this `converted/` folder as the repository root, not the parent workspace: the parent contains the source CSV and Apps Script reference files. The Actions workflows are ready, but the real-player release is not live until the Azure Function, private Blob data, Apps Script bridge, GitHub Actions settings, and frontend API URL above are configured. The demo at `?demo=1` uses fictional data only.
+The live roster-only selector is available at `https://a12-25.github.io/Lineup-Tool/`; it lists all real players but disables Submit until the projection API is configured. The repository is `https://github.com/a12-25/Lineup-Tool.git`, and only the `converted/` contents are published. The demo at `?demo=1` uses fictional players and mock calculations.
 
 ## Local development
 

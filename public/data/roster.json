@@ -1,0 +1,3886 @@
+[
+    {
+        "player":  "A.J. Green",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Aaron Gordon",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Aaron Holiday",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Aaron Nesmith",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Aaron Wiggins",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Ace Bailey",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Adem Bona",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Adou Thiero",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "AJ Johnson",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "AJ Lawson",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Ajay Mitchell",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Al Horford",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Alex Caruso",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Alexandre Sarr",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Alijah Martin",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Alperen Sengun",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Amari Williams",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Amen Thompson",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Amir Coffey",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Andre Drummond",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Andre Jackson Jr.",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Andrew Nembhard",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Andrew Wiggins",
+        "position":  "F-G",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Anfernee Simons",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Anthony Black",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Anthony Davis",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Anthony Edwards",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Anthony Gill",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Antonio Reeves",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Ariel Hukporti",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Asa Newell",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Ausar Thompson",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Austin Reaves",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Ayo Dosunmu",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Bam Adebayo",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Baylor Scheierman",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Ben Saraf",
+        "position":  "PG",
+        "slots":  [
+                      "PG"
+                  ]
+    },
+    {
+        "player":  "Ben Sheppard",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Bennedict Mathurin",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Bez Mbeng",
+        "position":  "PG",
+        "slots":  [
+                      "PG"
+                  ]
+    },
+    {
+        "player":  "Bilal Coulibaly",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Bismack Biyombo",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Blake Hinson",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Blake Wesley",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Bobby Portis",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Bogdan Bogdanovic",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Bradley Beal",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Branden Carlson",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Brandin Podziemski",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Brandon Ingram",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Brandon Miller",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Brandon Williams",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Brice Sensabaugh",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Bronny James",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Brook Lopez",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Brooks Barnhizer",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Bruce Brown",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Bryce McGowens",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Buddy Hield",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Cade Cunningham",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Caleb Love",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Caleb Martin",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Cam Christie",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Cam Spencer",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Cam Whitmore",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Cameron Johnson",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Caris LeVert",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Carlton Carrington",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Carter Bryant",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Cason Wallace",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Cedric Coward",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Chaney Johnson",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Charles Bassey",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Chaz Lanier",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Chet Holmgren",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Chris Youngblood",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Christian Braun",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Christian Koloko",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "CJ McCollum",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Clint Capela",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Coby White",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Cody Williams",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Colin Castleton",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Collin Gillespie",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Collin Murray-Boyles",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Collin Sexton",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Cooper Flagg",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Corey Kispert",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Cormac Ryan",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Craig Porter",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Daeqwon Plowden",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Dalano Banton",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Dalen Terry",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Dalton Knecht",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Damian Lillard",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "D\u0027Angelo Russell",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Daniel Gafford",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Daniss Jenkins",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Danny Wolf",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Darius Garland",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "DaRon Holmes II",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "David Roddy",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Davion Mitchell",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Day\u0027Ron Sharpe",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "De\u0027Aaron Fox",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Dean Wade",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Deandre Ayton",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "De\u0027Andre Hunter",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "DeAndre Jordan",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "De\u0027Anthony Melton",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Dejounte Murray",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "DeMar DeRozan",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Deni Avdija",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Dennis Schroder",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Dereck Lively II",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Derik Queen",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Derrick Jones Jr.",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Derrick White",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Desmond Bane",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Devin Booker",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Devin Carter",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Devin Vassell",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Dillon Brooks",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Dillon Jones",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Domantas Sabonis",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Dominick Barlow",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Donovan Clingan",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Donovan Mitchell",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Donte DiVincenzo",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Dorian Finney-Smith",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Doug McDermott",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Drake Powell",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Draymond Green",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Drew Eubanks",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Drew Timme",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Dru Smith",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Duncan Robinson",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Dwight Powell",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Dylan Cardwell",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Dylan Harper",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Dyson Daniels",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "E.J. Liddell",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Egor Dëmin",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Elijah Harkless",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Enrique Freeman",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Ethan Thompson",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Evan Mobley",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Franz Wagner",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Fred VanVleet",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Gabe Vincent",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Garrett Temple",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Gary Harris",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Gary Payton II",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Gary Trent Jr.",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "GG Jackson",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Giannis Antetokounmpo",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Goga Bitadze",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Gradey Dick",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Grant Williams",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Grayson Allen",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Guerschon Yabusele",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Gui Santos",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Harrison Barnes",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Haywood Highsmith",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Herbert Jones",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Hugo González",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Immanuel Quickley",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Isaac Jones",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Isaac Okoro",
+        "position":  "F-G",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Isaiah Collier",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Isaiah Hartenstein",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Isaiah Jackson",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Isaiah Joe",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Isaiah Livers",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Isaiah Stewart",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Ivica Zubac",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Ja Morant",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jabari Smith Jr.",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Jabari Walker",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jaden Hardy",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jaden McDaniels",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jae\u0027Sean Tate",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jahmai Mashack",
+        "position":  "PG",
+        "slots":  [
+                      "PG"
+                  ]
+    },
+    {
+        "player":  "Jaime Jaquez Jr.",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Jake LaRavia",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jakob Poeltl",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Ja\u0027Kobe Walter",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jalen Brunson",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jalen Duren",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Jalen Green",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jalen Johnson",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jalen Pickett",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jalen Slawson",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jalen Smith",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Jalen Suggs",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jalen Williams",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Jalen Wilson",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jamal Cain",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Jamal Murray",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jamal Shead",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jamaree Bouyea",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "James Harden",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jamir Watkins",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jamison Battle",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jarace Walker",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jared McCain",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jaren Jackson Jr.",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Jarred Vanderbilt",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jarrett Allen",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Jase Richardson",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Javon Small",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Javonte Green",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jaxson Hayes",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Jay Huff",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Jaylen Brown",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jaylen Clark",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jaylen Wells",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jaylin Williams",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Jaylon Tyson",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Jayson Tatum",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "JD Davison",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jeff Green",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jerami Grant",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jeremiah Fears",
+        "position":  "PG",
+        "slots":  [
+                      "PG"
+                  ]
+    },
+    {
+        "player":  "Jeremy Sochan",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jericho Sims",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Jett Howard",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Jevon Carter",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jimmy Butler",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Joan Beringer",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Jock Landale",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Joe Ingles",
+        "position":  "F-G",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Joel Embiid",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "John Collins",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "John Konchar",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "John Poulakidas",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Johnny Furphy",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jonas Valanciunas",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Jonathan Isaac",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jonathan Kuminga",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jonathan Mogbo",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jordan Clarkson",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jordan Goodwin",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jordan Hawkins",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jordan McLaughlin",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jordan Miller",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jordan Poole",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jordan Walsh",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jose Alvarado",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Josh Giddey",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Josh Green",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Josh Hart",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Josh Minott",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Josh Okogie",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Jrue Holiday",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Julian Champagnie",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Julian Phillips",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Julian Reese",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Julian Strawther",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Julius Randle",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Justin Champagnie",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Justin Edwards",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Jusuf Nurkic",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Kam Jones",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Karl-Anthony Towns",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Karlo Matkovic",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Kasparas Jakučionis",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Kawhi Leonard",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Keaton Wallace",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Keegan Murray",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Keldon Johnson",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Kel\u0027el Ware",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Kelly Olynyk",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Kelly Oubre Jr.",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Kenrich Williams",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Kentavious Caldwell-Pope",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Keon Ellis",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Keshad Johnson",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Kevin Durant",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Kevin Huerter",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Kevin Love",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Kevin McCullar Jr.",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Kevin Porter Jr.",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Kevon Looney",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Keyonte George",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Khaman Maluach",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Khris Middleton",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Killian Hayes",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "KJ Simpson",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Klay Thompson",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Kobe Brown",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Kobe Sanders",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Kon Knueppel",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Kris Dunn",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Kris Murray",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Kristaps Porzingis",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Kyle Anderson",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Kyle Filipowski",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Kyle Kuzma",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Kyle Lowry",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Kyrie Irving",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Kyshawn George",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Lachlan Olbrich",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "LaMelo Ball",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Landry Shamet",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Larry Nance Jr.",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Lauri Markkanen",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Leaky Black",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "LeBron James",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Leonard Miller",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Liam McNeeley",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Lindy Waters III",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "LJ Cryer",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Luguentz Dort",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Luka Doncic",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Luka Garza",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Luke Kennard",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Luke Kornet",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Mac McClung",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Malachi Smith",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Malevy Leons",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Malik Monk",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Marcus Sasser",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Marcus Smart",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "MarJon Beauchamp",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Mark Williams",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Marvin Bagley III",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Mason Plumlee",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Matas Buzelis",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Matisse Thybulle",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Max Christie",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Max Strus",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Maxi Kleber",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Maxime Raynaud",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Micah Peavy",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Micah Potter",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Michael Porter Jr.",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Mikal Bridges",
+        "position":  "F-G",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Mike Conley",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Miles Bridges",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Miles McBride",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Mitchell Robinson",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Mohamed Diawara",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Moritz Wagner",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Moses Moody",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Mouhamed Gueye",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Moussa Cisse",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Moussa Diabate",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Myles Turner",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Myron Gardner",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Nae\u0027Qwan Tomlin",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Nah\u0027Shon Hyland",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Naji Marshall",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Naz Reid",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Neemias Queta",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Nick Richards",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Nick Smith Jr.",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Nickeil Alexander-Walker",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Nicolas Batum",
+        "position":  "F-G",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Nicolas Claxton",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Nikola Jokic",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Nikola Jovic",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Nikola Vucevic",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Nique Clifford",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Noah Clowney",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Noah Penda",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Nolan Traore",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Norman Powell",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Obi Toppin",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Ochai Agbaji",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "OG Anunoby",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Olivier-Maxence Prosper",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Onyeka Okongwu",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Oscar Tshiebwe",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Oso Ighodaro",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Ousmane Dieng",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "P.J. Washington",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Pacôme Dadiet",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Paolo Banchero",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Pascal Siakam",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Pat Connaughton",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Pat Spencer",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Patrick Baldwin Jr.",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Patrick Williams",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Paul George",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Paul Reed",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Payton Pritchard",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Pelle Larsson",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Pete Nance",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Peyton Watson",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "PJ Hall",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Precious Achiuwa",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Quentin Grimes",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Quenton Jackson",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Quinten Post",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Rasheer Fleming",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Rayan Rupert",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "RayJ Dennis",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Reed Sheppard",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "RJ Barrett",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Rob Dillingham",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Robert Williams III",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Ron Harper Jr.",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Ronald Holland II",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Royce O\u0027Neale",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Rudy Gobert",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Rui Hachimura",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Russell Westbrook",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Ryan Dunn",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Ryan Kalkbrenner",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Ryan Nembhard",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Ryan Rollins",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Saddiq Bey",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Sam Hauser",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Sam Merrill",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Sandro Mamukelashvili",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Santi Aldama",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Scoot Henderson",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Scottie Barnes",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Scotty Pippen Jr.",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Seth Curry",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Shaedon Sharpe",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Shai Gilgeous-Alexander",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Sharife Cooper",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Sidy Cissoko",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Simone Fontecchio",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Sion James",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Spencer Jones",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Stephen Curry",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Stephon Castle",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Steven Adams",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Svi Mykhailiuk",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "T.J. McConnell",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Taelon Peter",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Taj Gibson",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Tari Eason",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Taurean Prince",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Taylor Hendricks",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Terance Mann",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Terrence Shannon Jr.",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Thanasis Antetokounmpo",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Thomas Bryant",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Tidjane Salaün",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Tim Hardaway Jr.",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Tobias Harris",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Tolu Smith",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Tony Bradley",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Tosan Evbuomwan",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Toumani Camara",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Trae Young",
+        "position":  "PG",
+        "slots":  [
+                      "PG"
+                  ]
+    },
+    {
+        "player":  "Trayce Jackson-Davis",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Tre Johnson",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Tre Jones",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Tre Mann",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Trendon Watford",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Trey Alexander",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Trey Jemison",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Trey Murphy III",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Tristan da Silva",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Tristan Vukcevic",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Ty Jerome",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Tyler Herro",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Tyler Kolek",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Tyler Smith",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Tyrese Haliburton",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Tyrese Martin",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Tyrese Maxey",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Tyrese Proctor",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Tyson Etienne",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "TyTy Washington Jr.",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Tyus Jones",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Victor Wembanyama",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Vit Krejci",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "VJ Edgecombe",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Walker Kessler",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Walter Clayton Jr.",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Wendell Carter Jr.",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Wendell Moore Jr.",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Will Richard",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Will Riley",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Xavier Tillman",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Yang Hansen",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Yanic Konan Niederhäuser",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Yuki Kawamura",
+        "position":  "G",
+        "slots":  [
+                      "PG",
+                      "SG"
+                  ]
+    },
+    {
+        "player":  "Yves Missi",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Zaccharie Risacher",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Zach Collins",
+        "position":  "C-F",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Zach Edey",
+        "position":  "C",
+        "slots":  [
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Zach LaVine",
+        "position":  "G-F",
+        "slots":  [
+                      "SG",
+                      "SF"
+                  ]
+    },
+    {
+        "player":  "Zeke Nnaji",
+        "position":  "F-C",
+        "slots":  [
+                      "PF",
+                      "C"
+                  ]
+    },
+    {
+        "player":  "Ziaire Williams",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    },
+    {
+        "player":  "Zion Williamson",
+        "position":  "F",
+        "slots":  [
+                      "SF",
+                      "PF"
+                  ]
+    }
+]
