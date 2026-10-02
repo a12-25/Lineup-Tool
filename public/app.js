@@ -25,6 +25,7 @@ const netRatingAxisTrigger = document.getElementById("netRatingAxisTrigger");
 const apiBaseUrl = document.querySelector('meta[name="lineup-api-base-url"]').content.trim().replace(/\/$/, "");
 const spreadsheetProjectionUrl = document.querySelector('meta[name="spreadsheet-projection-url"]').content.trim();
 const isDemoMode = new URLSearchParams(window.location.search).get("demo") === "1";
+const themeToggle = document.getElementById("themeToggle");
 let currentLineupNames = [];
 let currentProfiles = new Map();
 let lastSuccessfulLineupKey = null;
@@ -37,6 +38,33 @@ let chartRevealObserver = null;
 let chartRevealFrame = 0;
 let chartRevealPlayedForLineup = false;
 let chartRevealRects = [];
+
+function setColorTheme(theme, persist = false) {
+  const isLightTheme = theme === "light";
+  document.documentElement.dataset.theme = isLightTheme ? "light" : "dark";
+  themeToggle.textContent = isLightTheme ? "Dark mode" : "Light mode";
+  themeToggle.setAttribute("aria-label", `Switch to ${isLightTheme ? "dark" : "light"} theme`);
+  themeToggle.setAttribute("aria-pressed", String(isLightTheme));
+  if (persist) {
+    try {
+      localStorage.setItem("lineup-theme", isLightTheme ? "light" : "dark");
+    } catch {
+      return;
+    }
+  }
+}
+
+let savedTheme = "dark";
+try {
+  savedTheme = localStorage.getItem("lineup-theme") || "dark";
+} catch {
+  savedTheme = "dark";
+}
+setColorTheme(savedTheme);
+themeToggle.addEventListener("click", () => {
+  setColorTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark", true);
+});
+
 const demoPlayers = [
   { player: "Demo Point Guard", position: "PG", slots: ["PG"] },
   { player: "Demo Combo Guard", position: "G", slots: ["PG", "SG"] },

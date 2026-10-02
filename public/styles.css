@@ -4,16 +4,36 @@
 
 :root {
   color-scheme: dark;
-  --page: #111827;
-  --surface: #1f2937;
-  --line: #374151;
+  --page: #090a0d;
+  --surface: #15181f;
+  --line: #343a46;
   --muted: #aebdce;
   --text: #f3f4f6;
-  --accent: #2dd4bf;
+  --accent: #1d4ed8;
   --positive: #28a58d;
   --negative: #d17a54;
   --chart-grid: #394554;
   --chart-axis: #93a1b2;
+  --notice-background: #292524;
+  --notice-text: #fde68a;
+  --notice-accent: #f59e0b;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --page: #f8fafc;
+  --surface: #ffffff;
+  --line: #cbd5e1;
+  --muted: #475569;
+  --text: #111827;
+  --accent: #1d4ed8;
+  --positive: #15803d;
+  --negative: #c2410c;
+  --chart-grid: #dbe2ea;
+  --chart-axis: #64748b;
+  --notice-background: #fef3c7;
+  --notice-text: #78350f;
+  --notice-accent: #d97706;
 }
 
 body {
@@ -30,9 +50,17 @@ body {
 }
 
 .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
   margin-bottom: 22px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--line);
+}
+
+.page-header-content {
+  min-width: 0;
 }
 
 .page-header h1 {
@@ -44,6 +72,20 @@ body {
 .section-heading p {
   margin: 0;
   color: var(--muted);
+}
+
+.theme-toggle {
+  flex: none;
+  min-height: 38px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .dashboard-layout {
@@ -106,7 +148,7 @@ body {
   min-width: 0;
   min-height: 40px;
   padding: 8px 10px;
-  border: 1px solid #64748b;
+  border: 1px solid var(--line);
   border-radius: 5px;
   background: var(--page);
   color: var(--text);
@@ -114,8 +156,8 @@ body {
 }
 
 .lineup-form button {
-  background: #0f766e;
-  border-color: #0f766e;
+  background: var(--accent);
+  border-color: var(--accent);
   font-weight: 700;
   cursor: pointer;
 }
@@ -143,7 +185,7 @@ body {
   inset: calc(100% + 4px) 0 auto;
   max-height: min(18rem, 50vh);
   overflow-y: auto;
-  border: 1px solid #64748b;
+  border: 1px solid var(--line);
   border-radius: 4px;
   background: var(--surface);
   box-shadow: 0 8px 20px rgb(0 0 0 / 35%);
@@ -166,7 +208,7 @@ body {
 
 .player-picker-option:hover,
 .player-picker-option.is-active {
-  background: #0f766e;
+  background: var(--accent);
 }
 
 .player-picker-empty {
@@ -208,10 +250,10 @@ body {
   aspect-ratio: 1.25;
   place-items: center;
   overflow: hidden;
-  border: 1px solid #657487;
+  border: 1px solid var(--line);
   border-radius: 4px;
   background: var(--surface);
-  color: #e2e8f0;
+  color: var(--text);
   font-size: 1.05rem;
   font-weight: 700;
 }
@@ -243,7 +285,7 @@ body {
   border: 1px solid var(--line);
   border-radius: 4px;
   background: var(--surface);
-  color: #e2e8f0;
+  color: var(--text);
   font-size: 1.05rem;
   font-weight: 700;
 }
@@ -454,7 +496,7 @@ body {
 .net-rating-chart .chart-point:hover,
 .net-rating-chart .chart-point:focus-visible,
 .net-rating-chart .chart-point.is-selected {
-  stroke: #fff;
+  stroke: var(--surface);
   stroke-width: 2.5;
   r: 5px;
   outline: none;
@@ -561,7 +603,7 @@ th {
 
 .profile-close,
 .mobile-profile-toggle {
-  border: 1px solid #64748b;
+  border: 1px solid var(--line);
   border-radius: 5px;
   background: var(--surface);
   color: var(--text);
@@ -641,9 +683,9 @@ th {
 .demo-banner {
   margin: 0 0 12px;
   padding: 9px 12px;
-  border-left: 3px solid #f59e0b;
-  background: #292524;
-  color: #fde68a;
+  border-left: 3px solid var(--notice-accent);
+  background: var(--notice-background);
+  color: var(--notice-text);
   font-size: 0.82rem;
 }
 
@@ -735,8 +777,8 @@ th {
     max-width: calc(100vw - 28px);
     min-height: 46px;
     padding: 10px 15px;
-    border-color: #0f766e;
-    background: #0f766e;
+    border-color: var(--accent);
+    background: var(--accent);
     box-shadow: 0 5px 20px rgb(0 0 0 / 35%);
     font-weight: 700;
     overflow: hidden;
@@ -762,6 +804,14 @@ th {
 }
 
 @media (max-width: 620px) {
+  .page-header {
+    gap: 10px;
+  }
+
+  .theme-toggle {
+    padding-inline: 8px;
+  }
+
   .lineup-form {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
