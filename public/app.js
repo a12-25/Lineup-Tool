@@ -26,6 +26,7 @@ const apiBaseUrl = document.querySelector('meta[name="lineup-api-base-url"]').co
 const spreadsheetProjectionUrl = document.querySelector('meta[name="spreadsheet-projection-url"]').content.trim();
 const isDemoMode = new URLSearchParams(window.location.search).get("demo") === "1";
 let currentLineupNames = [];
+let currentProfiles = new Map();
 let jsonpRequestId = 0;
 let selectedNetPoint = null;
 let currentNetRatingPoints = [];
@@ -1014,8 +1015,15 @@ function renderResults(data, selectedNames, selectedProfile) {
   renderPerformance(data);
   renderNetRatingChart(data.netRatingOverTime, true);
   currentLineupNames = selectedNames;
+  currentProfiles = new Map((data.profiles || []).map(profile => [
+    normalizePlayerName(profile.player),
+    profile
+  ]));
+  if (data.profile) {
+    currentProfiles.set(normalizePlayerName(data.profile.player), data.profile);
+  }
   populateProfileSelector(data.players, selectedProfile);
-  renderProfile(data.profile);
+  renderProfile(currentProfiles.get(normalizePlayerName(selectedProfile)) || data.profile);
   profileToggle.textContent = "Player Profile";
 }
 
@@ -1048,6 +1056,13 @@ async function initialize() {
 
 async function updateSelectedProfile(profilePlayer) {
   if (!currentLineupNames.length) return;
+  const cachedProfile = currentProfiles.get(normalizePlayerName(profilePlayer));
+  if (cachedProfile) {
+    renderProfile(cachedProfile);
+    showStatus(`${profilePlayer} profile loaded.`);
+    return;
+  }
+
   profileSelect.disabled = true;
   profileContent.classList.add("is-loading");
   profileContent.setAttribute("aria-busy", "true");
@@ -1058,6 +1073,7 @@ async function updateSelectedProfile(profilePlayer) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ players: currentLineupNames, profilePlayer })
     });
+    currentProfiles.set(normalizePlayerName(profilePlayer), data.profile);
     renderProfile(data.profile);
     showStatus(`${profilePlayer} profile loaded.`);
   } catch (error) {

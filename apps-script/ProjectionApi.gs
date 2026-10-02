@@ -86,7 +86,8 @@ function calculatePrivateLineupProjections_(playerNames, selectedProfileName) {
 
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   const playersSheet = getRequiredSheet_(spreadsheet, CONFIG.SHEETS.PLAYERS);
-  const database = buildBioDatabase_(playersSheet);
+  const playerSheetValues = playersSheet.getDataRange().getValues();
+  const database = buildBioDatabase_(playersSheet, playerSheetValues);
   const lineup = selectedKeys.map((key, index) => {
     const record = database.recordsByName[key];
     if (!record) throw new Error("A selected player was not found.");
@@ -99,7 +100,8 @@ function calculatePrivateLineupProjections_(playerNames, selectedProfileName) {
     playersSheet,
     lineup,
     offensiveRoles,
-    defensiveRoles
+    defensiveRoles,
+    playerSheetValues
   );
   const preparedLineup = sharedAnalysis.records;
   const offensiveProjection = calculateLineupOffensiveProjections_(
@@ -108,7 +110,10 @@ function calculatePrivateLineupProjections_(playerNames, selectedProfileName) {
     defensiveRoles
   );
 
-  const calibration = getCachedPlayerPerformanceCalibration_(playersSheet);
+  const calibration = getCachedPlayerPerformanceCalibration_(
+    playersSheet,
+    playerSheetValues
+  );
   const playerDefenseRatings = {};
   preparedLineup.forEach(player => {
     const key = normalizeBioPlayerName_(player.player);
@@ -146,15 +151,57 @@ function calculatePrivateLineupProjections_(playerNames, selectedProfileName) {
     preparedLineup,
     defensiveRoles
   );
-  const selectedProfilePlayer = preparedLineup.find(
-    player => keyFor(player) === selectedProfileKey
+  const buildProfile = player => {
+    const key = keyFor(player);
+    const shotProfile = expectedShotProfiles[key];
+    const shotEfficiency = expectedShotEfficiencies[key];
+    const defense = expectedDefenses[key];
+    const impact = sharedAnalysis.impact[key];
+
+    return {
+      player: player.player,
+      bio: {
+        position: player.lineupSlot,
+        offensiveRole: offensiveRoles[key],
+        defensiveRole: defensiveRoles[key],
+        age: player.age,
+        value: player.value
+      },
+      offensiveLoad: sharedAnalysis.offenseLoads[key],
+      defensiveLoad: sharedAnalysis.defenseLoads[key],
+      expectedShotProfile: {
+        threePointShare: projectionApiPercent_(shotProfile.threeShare),
+        midrangeShare: projectionApiPercent_(shotProfile.midShare),
+        rimShare: projectionApiPercent_(shotProfile.rimShare),
+        freeThrowRate: projectionApiPercent_(shotProfile.freeThrowRate)
+      },
+      expectedShotEfficiency: {
+        threePointPct: projectionApiPercent_(shotEfficiency.threePoint),
+        midrangePct: projectionApiPercent_(shotEfficiency.midrange),
+        rimPct: projectionApiPercent_(shotEfficiency.rim),
+        freeThrowPct: projectionApiPercent_(shotEfficiency.freeThrow)
+      },
+      expectedDefense: {
+        idealMatchup: defense.idealMatchup,
+        deflectionsPer100: defense.deflections,
+        pointsSavedPer100: defense.pointsSaved,
+        turnoversCreatedPer100: defense.turnoversCreated
+      },
+      expectedImpact: {
+        pace: impact.pace,
+        shotProfile: impact.shotProfile,
+        shotEfficiency: impact.shotEfficiency,
+        opponentEfficiency: impact.opponentEfficiency,
+        stopsCreation: impact.stopsCreation,
+        rebounding: impact.rebounding,
+        netRating: impact.netRating
+      }
+    };
+  };
+  const profiles = preparedLineup.map(buildProfile);
+  const selectedProfile = profiles.find(
+    profile => normalizeBioPlayerName_(profile.player) === selectedProfileKey
   );
-  const selectedShotProfile = expectedShotProfiles[selectedProfileKey];
-  const selectedShotEfficiency = expectedShotEfficiencies[selectedProfileKey];
-  const selectedDefense = expectedDefenses[selectedProfileKey];
-  const selectedImpact = sharedAnalysis.impact[selectedProfileKey];
-  const selectedOffenseLoad = sharedAnalysis.offenseLoads[selectedProfileKey];
-  const selectedDefenseLoad = sharedAnalysis.defenseLoads[selectedProfileKey];
   const playerPerformance = preparedLineup.map(player => {
     const key = keyFor(player);
     const offensiveRaw = calculatePlayerPerformanceOffRaw_(player);
@@ -278,45 +325,8 @@ function calculatePrivateLineupProjections_(playerNames, selectedProfileName) {
       pace: overview.pace,
       versatility: overview.versatility
     },
-    profile: {
-      player: selectedProfilePlayer.player,
-      bio: {
-        position: selectedProfilePlayer.lineupSlot,
-        offensiveRole: offensiveRoles[selectedProfileKey],
-        defensiveRole: defensiveRoles[selectedProfileKey],
-        age: selectedProfilePlayer.age,
-        value: selectedProfilePlayer.value
-      },
-      offensiveLoad: selectedOffenseLoad,
-      defensiveLoad: selectedDefenseLoad,
-      expectedShotProfile: {
-        threePointShare: projectionApiPercent_(selectedShotProfile.threeShare),
-        midrangeShare: projectionApiPercent_(selectedShotProfile.midShare),
-        rimShare: projectionApiPercent_(selectedShotProfile.rimShare),
-        freeThrowRate: projectionApiPercent_(selectedShotProfile.freeThrowRate)
-      },
-      expectedShotEfficiency: {
-        threePointPct: projectionApiPercent_(selectedShotEfficiency.threePoint),
-        midrangePct: projectionApiPercent_(selectedShotEfficiency.midrange),
-        rimPct: projectionApiPercent_(selectedShotEfficiency.rim),
-        freeThrowPct: projectionApiPercent_(selectedShotEfficiency.freeThrow)
-      },
-      expectedDefense: {
-        idealMatchup: selectedDefense.idealMatchup,
-        deflectionsPer100: selectedDefense.deflections,
-        pointsSavedPer100: selectedDefense.pointsSaved,
-        turnoversCreatedPer100: selectedDefense.turnoversCreated
-      },
-      expectedImpact: {
-        pace: selectedImpact.pace,
-        shotProfile: selectedImpact.shotProfile,
-        shotEfficiency: selectedImpact.shotEfficiency,
-        opponentEfficiency: selectedImpact.opponentEfficiency,
-        stopsCreation: selectedImpact.stopsCreation,
-        rebounding: selectedImpact.rebounding,
-        netRating: selectedImpact.netRating
-      }
-    }
+    profiles,
+    profile: selectedProfile
   };
 }
 
