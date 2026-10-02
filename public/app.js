@@ -19,8 +19,10 @@ const netRatingSvg = document.getElementById("netRatingSvg");
 const netRatingTooltip = document.getElementById("netRatingTooltip");
 const netRatingEmpty = document.getElementById("netRatingEmpty");
 const apiBaseUrl = document.querySelector('meta[name="lineup-api-base-url"]').content.trim().replace(/\/$/, "");
+const spreadsheetProjectionUrl = document.querySelector('meta[name="spreadsheet-projection-url"]').content.trim();
 const isDemoMode = new URLSearchParams(window.location.search).get("demo") === "1";
 let currentLineupNames = [];
+let jsonpRequestId = 0;
 let selectedNetPoint = null;
 let currentNetRatingPoints = [];
 const demoPlayers = [
@@ -61,9 +63,6 @@ async function apiRequest(path, options = {}) {
     const response = await fetch("./data/roster.json");
     if (!response.ok) throw new Error("The real player roster could not be loaded.");
     return response.json();
-  }
-  if (path === "lineup" && !apiBaseUrl) {
-    throw new Error("The real-player projection API is not configured yet.");
   }
   if (isDemoMode && path === "lineup") {
     const { players: names, profilePlayer = names?.[0] } = JSON.parse(options.body || "{}");
@@ -179,10 +178,55 @@ async function apiRequest(path, options = {}) {
     };
   }
 
+  if (path === "lineup" && !apiBaseUrl && spreadsheetProjectionUrl) {
+    const request = JSON.parse(options.body || "{}");
+    return requestSpreadsheetProjection(request.players, request.profilePlayer);
+  }
+  if (path === "lineup" && !apiBaseUrl) {
+    throw new Error("The spreadsheet projection URL has not been configured yet.");
+  }
+
   const response = await fetch(`${apiBaseUrl}/${path}`, options);
   const body = await response.json();
   if (!response.ok) throw new Error(body.error || "The request could not be completed");
   return body;
+}
+
+function requestSpreadsheetProjection(players, profilePlayer) {
+  return new Promise((resolve, reject) => {
+    const callbackName = `__lineupProjectionCallback_${Date.now()}_${++jsonpRequestId}`;
+    const endpoint = new URL(spreadsheetProjectionUrl);
+    endpoint.searchParams.set("callback", callbackName);
+    endpoint.searchParams.set("request", JSON.stringify({ players, profilePlayer }));
+
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = endpoint.toString();
+    let timeoutId;
+    const cleanup = () => {
+      window.clearTimeout(timeoutId);
+      delete window[callbackName];
+      script.remove();
+    };
+
+    window[callbackName] = result => {
+      cleanup();
+      if (!result || result.error) {
+        reject(new Error(result?.error || "Spreadsheet projections are unavailable."));
+        return;
+      }
+      resolve(result);
+    };
+    script.onerror = () => {
+      cleanup();
+      reject(new Error("Unable to reach the spreadsheet projection service."));
+    };
+    timeoutId = window.setTimeout(() => {
+      cleanup();
+      reject(new Error("The spreadsheet projection request timed out."));
+    }, 45000);
+    document.head.append(script);
+  });
 }
 
 function normalizePlayerName(value) {
@@ -884,13 +928,15 @@ async function initialize() {
       }
     });
     const submitButton = lineupForm.querySelector("button[type='submit']");
-    const rosterOnlyMode = !apiBaseUrl && !isDemoMode;
+    const rosterOnlyMode = !apiBaseUrl && !spreadsheetProjectionUrl && !isDemoMode;
     submitButton.disabled = rosterOnlyMode;
     showStatus(isDemoMode
       ? "Fictional sample roster loaded."
       : rosterOnlyMode
-        ? `${players.length} real players loaded. Projection API setup is required to submit lineups.`
-        : `${players.length} players available`);
+        ? `${players.length} real players loaded. Configure the spreadsheet projection URL to submit lineups.`
+        : spreadsheetProjectionUrl && !apiBaseUrl
+          ? `${players.length} real players loaded. Spreadsheet projection URL configured.`
+          : `${players.length} players available`);
   } catch (error) {
     showStatus(error.message);
   }

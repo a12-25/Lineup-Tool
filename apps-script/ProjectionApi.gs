@@ -1,9 +1,44 @@
 /**
- * Private server-to-server projection endpoint for the web app.
+ * Read-only projection endpoints for the web app.
  *
- * Store PROJECTION_API_KEY in Script Properties and configure the same value
- * only in the Azure Function App settings. This endpoint never writes cells.
+ * doGet is JSONP for a static GitHub Pages frontend. It returns computed,
+ * whitelisted outputs only and never writes cells or returns raw player rows.
+ * doPost remains available for a server-to-server Azure bridge and requires
+ * PROJECTION_API_KEY in Script Properties and Azure Function App settings.
  */
+function doGet(e) {
+  const callback = String(e && e.parameter && e.parameter.callback || "");
+  if (!/^__lineupProjectionCallback_[A-Za-z0-9_]+$/.test(callback)) {
+    return ContentService
+      .createTextOutput("Invalid JSONP callback.")
+      .setMimeType(ContentService.MimeType.TEXT);
+  }
+
+  let result;
+  try {
+    const request = JSON.parse(e.parameter.request || "{}");
+    if (!request || typeof request !== "object" || Array.isArray(request)) {
+      throw new Error("Request must be a JSON object.");
+    }
+    result = calculatePrivateLineupProjections_(
+      request.players,
+      request.profilePlayer
+    );
+  } catch (error) {
+    console.error("Projection JSONP request failed: " + error.message);
+    result = { error: "Unable to calculate lineup projections." };
+  }
+
+  const safeJson = JSON.stringify(result)
+    .replace(/</g, "\\u003c")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+
+  return ContentService
+    .createTextOutput(callback + "(" + safeJson + ");")
+    .setMimeType(ContentService.MimeType.JAVASCRIPT);
+}
+
 function doPost(e) {
   let request;
 

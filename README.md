@@ -1,45 +1,41 @@
 # Lineup Tool Migration
 
-This folder contains the web migration of the Google Sheets / Apps Script lineup tool. The frontend is static; the complete player dataset stays private and is read by an Azure Functions API.
+This folder contains the web migration of the Google Sheets / Apps Script lineup tool. GitHub Pages serves a selector-only real-player roster. The existing spreadsheet can provide calculations through a read-only Apps Script JSONP endpoint; an Azure Functions/Blob backend is an optional alternative.
 
 ## What is included
 
 - A modular JavaScript architecture under `src/`
 - A browser frontend under `public/` with a selector-only roster containing real player names, positions, and eligible slots; statistical results remain behind the API
-- An Azure Functions API that reads full player records from private Blob Storage and gets exact lineup projections from the spreadsheet calculation service
-- A CSV-to-JSON conversion script that writes to the ignored `private/` directory
+- A read-only Apps Script JSONP endpoint that runs the spreadsheet's exact calculations and returns only lineup outputs/profile values
+- A CSV converter that writes full rows to ignored `private/players.json` and selector-only fields to `public/data/roster.json`
 - Separate GitHub Pages and Azure Functions deployment workflows
 
 ## Data handling
 
 1. Keep the source CSV out of the public repository.
-2. Run `python scripts/convert_csv_to_json.py`. This creates `private/players.json`, which is ignored by Git.
-3. Create a private Azure Blob container. Do not enable anonymous/public access.
-4. Set `PLAYER_DATA_STORAGE_ACCOUNT_URL` and `PLAYER_DATA_CONTAINER`, then run `npm run upload:data`. The signed-in Azure identity needs Storage Blob Data Contributor on the container.
-5. Set the Function App managed identity's Storage Blob Data Reader role on that container. Configure `PLAYER_DATA_BLOB_URL` as the full URL to `players.json` in the Function App settings.
-6. Copy [apps-script/ProjectionApi.gs](apps-script/ProjectionApi.gs) into the original Apps Script project. In Apps Script Project Settings, add a Script Property named `PROJECTION_API_KEY` with a strong random secret. Deploy it as a web app that runs as the spreadsheet owner and accepts requests from anyone; the endpoint rejects calls without the secret. Do not put this key in the frontend or Git.
+2. Run `python scripts/convert_csv_to_json.py` from `converted/`. This creates ignored `private/players.json` and a public selector-only `public/data/roster.json`.
+3. Copy [apps-script/ProjectionApi.gs](apps-script/ProjectionApi.gs) into the existing spreadsheet's Apps Script project. Deploy it as a web app that runs as the spreadsheet owner and is accessible to anyone. Its `doGet` JSONP route accepts five selected names and returns calculated projections plus a sanitized selected-player profile; it never returns raw player records or writes to spreadsheet cells.
+4. Copy the deployed web app's `/exec` URL into the `spreadsheet-projection-url` meta tag in `public/index.html`, commit, and push. This URL is public configuration, not a secret. JSONP lets the static GitHub Pages frontend call Apps Script without a CORS preflight.
 
-The function uses the local ignored `private/players.json` when `PLAYER_DATA_BLOB_URL` is not set, which supports local development. The generated `public/data/roster.json` intentionally contains only names, listed positions, and eligible lineup slots so Pages can populate the selectors without publishing stats. Never add the CSV or generated full JSON to Git, a public storage container, or the `public/` directory.
-The Apps Script workbook's Players sheet and the private JSON uploaded to Blob must come from the same player-data export; the roster endpoint and projection endpoint must recognize the same names.
+The generated `public/data/roster.json` intentionally contains only names, listed positions, and eligible lineup slots so Pages can populate all player selectors without publishing stats. Keep it in sync with the spreadsheet's Players sheet. Never add the source CSV, `private/players.json`, or any full-stat dataset to Git or `public/`.
 
-## Deploy
+## Optional Azure Backend
 
-1. Create the Azure Function App using the Node.js v4 programming model and Node.js 20 or later. Enable its system-assigned managed identity and configure the Blob reader role and `PLAYER_DATA_BLOB_URL` setting.
-2. Deploy the Apps Script web app described above. Configure `SPREADSHEET_PROJECTION_URL` with its `/exec` URL and `SPREADSHEET_PROJECTION_KEY` with the same secret in Function App settings. Keep both settings server-side.
-3. In GitHub repository settings, add the `AZURE_FUNCTIONAPP_NAME` repository variable and `AZURE_FUNCTIONAPP_PUBLISH_PROFILE` secret. The API workflow deploys the function app from the repository root.
-4. Set the allowed CORS origin on the Function App to the exact GitHub Pages origin (for example, `https://account.github.io`).
-5. Set the `lineup-api-base-url` meta tag in `public/index.html` to `https://<function-app>.azurewebsites.net/api`.
-6. In repository Settings > Pages, set the build and deployment source to **GitHub Actions**. This one-time setup is required before `actions/configure-pages` can find the Pages site. The existing Pages workflow publishes only `public/`.
+The current implementation also supports Azure Functions with private Blob Storage. That route requires an Azure subscription, a private storage container, managed identity with Blob Reader access, and the Function App settings `PLAYER_DATA_BLOB_URL`, `SPREADSHEET_PROJECTION_URL`, and `SPREADSHEET_PROJECTION_KEY`. Keep the `doPost` shared key only in Script Properties and Azure app settings. Configure `lineup-api-base-url` with the Function URL and add GitHub's `AZURE_FUNCTIONAPP_NAME` variable and `AZURE_FUNCTIONAPP_PUBLISH_PROFILE` secret. The Azure API deployment workflow skips deploy when those settings are absent.
 
-The API workflow always runs its tests. It deploys only when both `AZURE_FUNCTIONAPP_NAME` and `AZURE_FUNCTIONAPP_PUBLISH_PROFILE` are configured; otherwise it succeeds with an explicit deployment-skipped summary.
+## GitHub Pages Deploy
+
+In repository Settings > Pages, use **GitHub Actions** as the build and deployment source. This one-time setup is required before `actions/configure-pages` can find the Pages site. The Pages workflow publishes only `public/`.
+
+The Azure API workflow always runs its tests. It deploys only when both `AZURE_FUNCTIONAPP_NAME` and `AZURE_FUNCTIONAPP_PUBLISH_PROFILE` are configured; otherwise it succeeds with an explicit deployment-skipped summary.
 
 ### Early test release
 
-The live roster-only selector is available at `https://a12-25.github.io/Lineup-Tool/`; it lists all real players but disables Submit until the projection API is configured. The repository is `https://github.com/a12-25/Lineup-Tool.git`, and only the `converted/` contents are published. The demo at `?demo=1` uses fictional players and mock calculations.
+The live roster selector is available at `https://a12-25.github.io/Lineup-Tool/`. It lists all real players. Submit remains disabled until either the Apps Script `/exec` URL or Azure Function URL is configured. The repository is `https://github.com/a12-25/Lineup-Tool.git`, and only the `converted/` contents are published. The demo at `?demo=1` uses fictional players and mock calculations.
 
 ## Local development
 
-Install Node.js 20+, Azure Functions Core Tools v4, and Azurite, then install dependencies with `npm install`. Convert the CSV into ignored local JSON with `python scripts/convert_csv_to_json.py`, copy `local.settings.example.json` to `local.settings.json`, and fill in the Apps Script `/exec` URL and matching secret in that ignored file. Start Azurite and the API with `npm start`. Serve `public/` with any static web server and set the API base URL to `http://localhost:7071/api` while developing locally. Run `npm test` and `npm run check` for validation. Never commit `local.settings.json`.
+For the Apps Script path, set the `/exec` URL in the frontend meta tag and serve `public/` with any static web server. For local Azure Functions development, install Node.js 20+, Azure Functions Core Tools v4, and Azurite; install dependencies with `npm install`, convert the CSV to ignored private JSON, copy `local.settings.example.json` to `local.settings.json`, configure server-side settings, and start the API with `npm start`. Run `npm test` and `npm run check` for validation. Never commit `local.settings.json`.
 
 ### Manual frontend preview
 
@@ -54,6 +50,7 @@ The API preserves the spreadsheet's groups: overview ratings; offensive projecti
 ## Privacy limits
 
 - The API never returns the complete `raw` records; its roster endpoint returns names and positions, and its lineup endpoint returns calculations plus a sanitized profile for the selected lineup player. OFF, DEF, NET, and the four Lineup Overview ratings come from the spreadsheet's projection formulas, not averages of individual DPM values.
+- The Apps Script JSONP `doGet` route is public so GitHub Pages can call it without a browser-held secret. It returns only requested lineup calculations/profile data, but users can make repeated lineup requests and observe returned values; Apps Script quotas and execution latency apply.
 - Profile values are visible to the user who selects that player. Because the API is public, users can repeat requests for different lineups and collect profile values. This architecture prevents a one-request download of the complete source file; it does not make displayed player stats secret. Require authenticated access or omit those fields if that stronger restriction is necessary.
 - The GitHub Pages frontend and public source code must not contain the player CSV, generated dataset, storage credentials, or Function publish profile.
 - The original `.gs` spreadsheet files remain the business-logic reference and should not be added to a public repo unless intended.
