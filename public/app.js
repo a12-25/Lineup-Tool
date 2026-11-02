@@ -1852,6 +1852,8 @@ const SHAPE_ADJUSTMENTS = {
     defense: { set: { "Perimeter Defense": 77 } },
     offense: { add: { "Perimeter Shooting": 30, "Free Throws": 30 } }
   },
+  jakelaravia: { offense: { add: { "Perimeter Shooting": 40 } } },
+  jakelaravia: { offense: { add: { "Perimeter Shooting": 30 } } },
   walkerkessler: { offense: { add: { "Perimeter Shooting": -20, "Free Throws": -20 } } },
   sandromamukelashvili: {
     defense: { add: { "Perimeter Defense": -15, "Interior Defense": -15, "Possession Disruptance": -15, "Switchability": -15, "Stop Creation": -15, "Shot Suppression": -20 } },
