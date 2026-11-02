@@ -7,6 +7,7 @@ const usageProjection = document.getElementById("usageProjection");
 const performanceTable = document.getElementById("performanceTable");
 const lineupForm = document.getElementById("lineupForm");
 const statusMessage = document.getElementById("statusMessage");
+const positionlessToggle = document.getElementById("positionlessToggle");
 const demoBanner = document.getElementById("demoBanner");
 const profileSelect = document.getElementById("profileSelect");
 const profileContent = document.getElementById("profileContent");
@@ -50,6 +51,15 @@ let chartRevealRects = [];
 let lastLineupData = null;
 let currentPlayerSeries = new Map();
 let currentPlayerShapes = new Map();
+let availablePlayers = [];
+let positionlessMode = false;
+try {
+  positionlessMode = localStorage.getItem("lineup-positionless") === "true";
+} catch {
+  positionlessMode = false;
+}
+positionlessToggle.disabled = true;
+positionlessToggle.setAttribute("aria-checked", String(positionlessMode));
 const DEMO_OFFENSE_SHAPE = [
   "Shot Creating", "Playmaking", "Finishing", "Perimeter Shooting", "Free Throws",
   "Off-ball Scoring", "Ball Security", "Rebounding", "Gravity", "Pace Acceleration"
@@ -1496,6 +1506,38 @@ function setPlayerPickerDisabled(select, disabled) {
   playerPickers.get(select)?.setDisabled(disabled);
 }
 
+function refreshLineupPlayerOptions(initializeDemo = false) {
+  lineupForm.querySelectorAll("select").forEach(select => {
+    const previousSelection = select.value;
+    const players = positionlessMode
+      ? availablePlayers
+      : availablePlayers.filter(player => player.slots.includes(select.name));
+    select.replaceChildren(new Option("Choose a player", ""));
+    players.forEach(player => select.add(new Option(player.player, player.player)));
+    if (players.some(player => player.player === previousSelection)) {
+      select.value = previousSelection;
+    } else if (initializeDemo && isDemoMode) {
+      const exactPosition = players.find(player => player.position === select.name);
+      if (exactPosition) select.value = exactPosition.player;
+    }
+
+    const picker = playerPickers.get(select) || createPlayerPicker(select);
+    picker.setPlayers(players);
+    picker.syncSelection();
+  });
+}
+
+positionlessToggle.addEventListener("click", () => {
+  positionlessMode = positionlessToggle.getAttribute("aria-checked") !== "true";
+  positionlessToggle.setAttribute("aria-checked", String(positionlessMode));
+  refreshLineupPlayerOptions();
+  try {
+    localStorage.setItem("lineup-positionless", String(positionlessMode));
+  } catch {
+    showStatus("Could not save Positionless preference in this browser.");
+  }
+});
+
 function populateProfileSelector(players) {
   profileSelect.replaceChildren();
   profileSelect.add(new Option("Select Player", ""));
@@ -1641,16 +1683,9 @@ async function initialize() {
     if (birthdatesResponse?.ok) {
       nbaPlayerBirthdates = await birthdatesResponse.json().catch(() => ({}));
     }
-    lineupForm.querySelectorAll("select").forEach(select => {
-      select.replaceChildren(new Option("Choose a player", ""));
-      const eligiblePlayers = players.filter(player => player.slots.includes(select.name));
-      eligiblePlayers.forEach(player => select.add(new Option(player.player, player.player)));
-      if (isDemoMode) {
-        const exactPosition = eligiblePlayers.find(player => player.position === select.name);
-        if (exactPosition) select.value = exactPosition.player;
-      }
-      createPlayerPicker(select);
-    });
+    availablePlayers = players;
+    refreshLineupPlayerOptions(true);
+    positionlessToggle.disabled = false;
     const submitButton = lineupForm.querySelector("button[type='submit']");
     const rosterOnlyMode = !apiBaseUrl && !spreadsheetProjectionUrl && !isDemoMode;
     submitButton.disabled = rosterOnlyMode;

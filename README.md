@@ -12,6 +12,7 @@ Basketball coaches, analysts, and fans constantly ask the same question: *how go
 - **Output:** projected ratings for the lineup, an optimal-usage report with switchable system options, a per-player performance table, a simulated net-rating curve, and a detailed profile and 3D shape graph for any selected player.
 - **Features:**
   - Searchable player selectors for the full roster, filtered by eligible slot.
+  - Optional **Positionless** mode makes every player available in all five lineup selectors; the preference is saved in the browser.
   - Projected **OFF, DEF, and NET** ratings (points per 100 possessions) plus four overview ratings: creation balance, synergy, pace, and versatility.
   - Offensive and defensive projections: shot balance, offensive rebounding, 3P%, TS%, opponent TS%, defensive rebounding, turnover creation, and rim protection.
   - **Optimal usage**: the best offensive system, initiator, defensive system, and rebounding schemes. The Offense and Defense rows are dropdowns of ranked system options, and picking one updates each player's OFF and DEF role in their bio.
@@ -51,7 +52,7 @@ Browser (GitHub Pages)  --JSONP-->  Apps Script Web App  -->  Players sheet + .g
 
 ## User Interface Specification
 
-1. **Lineup form:** choose one player for each of the five slots, then submit.
+1. **Lineup form:** choose one player for each of the five slots, then submit. Switch on **Positionless** to make every player available in every slot; switch it off to restore eligibility filtering.
 2. **Results (left column):** rating projections, lineup overview, offensive and defensive projections, optimal usage, player performance, and the net-rating chart.
 3. **Optimal usage dropdowns:** change the Offense or Defense system to see how the selected player's roles change.
 4. **Player profile (right column):** choose a lineup player to open their profile. On mobile this is a drawer opened from the fixed Player Profile button.
