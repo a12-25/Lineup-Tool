@@ -1149,12 +1149,32 @@ function renderUsageSystemRow(container, side, label, width) {
   const list = document.createElement("ul");
   list.className = "system-dropdown-list";
   list.setAttribute("role", "listbox");
-  list.hidden = true;
 
   const close = () => {
-    list.hidden = true;
+    list.classList.remove("open");
     button.setAttribute("aria-expanded", "false");
     document.removeEventListener("mousedown", onOutside, true);
+  };
+  const animateFits = () => {
+    list.querySelectorAll(".system-option-fit").forEach(fit => {
+      const target = Number(fit.dataset.pct);
+      const bar = fit.querySelector(".system-option-bar-fill");
+      const num = fit.querySelector(".system-option-num");
+      bar.style.transition = "none";
+      bar.style.width = "0%";
+      num.textContent = "0";
+      bar.getBoundingClientRect();
+      bar.style.transition = "width 0.7s cubic-bezier(0.22, 1, 0.36, 1)";
+      bar.style.width = `${target}%`;
+      const start = performance.now();
+      const tick = now => {
+        const t = Math.min(1, (now - start) / 700);
+        num.textContent = Math.round(target * (1 - Math.pow(1 - t, 3)));
+        if (t < 1 && list.classList.contains("open")) requestAnimationFrame(tick);
+        else if (t >= 1) num.textContent = target;
+      };
+      requestAnimationFrame(tick);
+    });
   };
   const onOutside = event => { if (!wrap.contains(event.target)) close(); };
   const choose = system => {
@@ -1180,10 +1200,19 @@ function renderUsageSystemRow(container, side, label, width) {
     const fit = document.createElement("span");
     fit.className = "system-option-fit";
     fit.style.setProperty("--fit-color", overviewRatingStyle("synergy", pct).color);
+    fit.dataset.pct = pct;
     const bar = document.createElement("span");
     bar.className = "system-option-bar";
+    const fill = document.createElement("span");
+    fill.className = "system-option-bar-fill";
+    fill.style.width = `${pct}%`;
+    bar.append(fill);
     const text = document.createElement("span");
-    text.textContent = `${pct}% best fit`;
+    text.className = "system-option-text";
+    const num = document.createElement("span");
+    num.className = "system-option-num";
+    num.textContent = pct;
+    text.append(num, "% best fit");
     fit.append(bar, text);
     item.append(name, fit);
     item.addEventListener("click", () => choose(option.system));
@@ -1199,14 +1228,15 @@ function renderUsageSystemRow(container, side, label, width) {
   if (options.length) {
     button.textContent = selectedSystem[side] || options[0].system;
     button.addEventListener("click", () => {
-      if (!list.hidden) { close(); return; }
-      list.hidden = false;
+      if (list.classList.contains("open")) { close(); return; }
+      list.classList.add("open");
       button.setAttribute("aria-expanded", "true");
       document.addEventListener("mousedown", onOutside, true);
-      (list.querySelector('[aria-selected="true"]') || list.firstElementChild)?.focus();
+      animateFits();
+      requestAnimationFrame(() => (list.querySelector('[aria-selected="true"]') || list.firstElementChild)?.focus({ preventScroll: true }));
     });
     button.addEventListener("keydown", event => {
-      if (event.key === "ArrowDown" && list.hidden) { event.preventDefault(); button.click(); }
+      if (event.key === "ArrowDown" && !list.classList.contains("open")) { event.preventDefault(); button.click(); }
     });
   } else {
     button.disabled = true;
