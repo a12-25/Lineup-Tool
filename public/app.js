@@ -1787,6 +1787,10 @@ const SHAPE_ADJUSTMENTS = {
   jadenhardy: { defense: { all: -10 } },
   collinsexton: { defense: { all: 5 } },
   quentingrimes: { defense: { set: { "Perimeter Defense": 77 } } },
+  sandromamukelashvili: {
+    defense: { add: { "Perimeter Defense": -15, "Interior Defense": -15, "Possession Disruptance": -15, "Switchability": -15, "Stop Creation": -15, "Shot Suppression": -20 } },
+    offense: { add: { "Free Throws": 25 } }
+  },
   austinreaves: {
     defense: { add: { "Possession Disruptance": -20, "Stop Creation": -20, "Shot Suppression": -20 } },
     offense: { all: 7 }
