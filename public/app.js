@@ -1543,7 +1543,7 @@ const SHAPE_IMPACT_WEIGHTS = {
   defense: { "Perimeter Defense": 0.045, "Interior Defense": 0.045, default: 0.035 }
 };
 
-function playerManualImpact(entry, deltaEntry) {
+function playerManualImpact(entry, deltaEntry, performance) {
   let off = 0;
   let def = 0;
   if (deltaEntry) {
@@ -1553,9 +1553,13 @@ function playerManualImpact(entry, deltaEntry) {
   if (entry) {
     ["offense", "defense"].forEach(side => {
       const weights = SHAPE_IMPACT_WEIGHTS[side];
+      const performanceKey = side === "offense" ? "offense" : "defense";
+      const performanceRating = Number(performance && performance[performanceKey]);
+      const blocksPositiveImpact = Number.isFinite(performanceRating) && performanceRating >= 90;
       (entry[side] || []).forEach(attribute => {
         if (!Number.isFinite(attribute.rating)) return;
         const change = adjustShapeRating(entry.player, side, attribute) - attribute.rating;
+        if (blocksPositiveImpact && change > 0) return;
         const amount = change * (weights[attribute.name] ?? weights.default);
         if (side === "offense") off += amount; else def += amount;
       });
@@ -1568,12 +1572,13 @@ function applyManualImpact(data) {
   if (!data || data.manualImpactApplied) return data;
   const shapes = new Map((data.playerShapes || []).map(entry => [normalizePlayerName(entry.player), entry]));
   const deltas = new Map((data.overrideDeltas || []).map(entry => [normalizePlayerName(entry.player), entry]));
+  const performance = new Map((data.performance || []).map(entry => [normalizePlayerName(entry.player), entry]));
   const impacts = new Map();
   let off = 0;
   let def = 0;
   (data.players || []).forEach(player => {
     const key = normalizePlayerName(player.player);
-    const impact = playerManualImpact(shapes.get(key), deltas.get(key));
+    const impact = playerManualImpact(shapes.get(key), deltas.get(key), performance.get(key));
     impacts.set(key, impact.off + impact.def);
     off += impact.off;
     def += impact.def;
@@ -1852,17 +1857,29 @@ const SHAPE_ADJUSTMENTS = {
     defense: { set: { "Perimeter Defense": 77 } },
     offense: { add: { "Perimeter Shooting": 30, "Free Throws": 30 } }
   },
-  jakelaravia: { offense: { add: { "Perimeter Shooting": 40 } } },
+  lukadoncic: { offense: { add: { "Free Throws": 40, "Perimeter Shooting": 15 } } },
   jakelaravia: { offense: { add: { "Perimeter Shooting": 30 } } },
+  walkerkessler: {
+    offense: { add: { "Perimeter Shooting": -20, "Free Throws": -20, Rebounding: 10 } },
+    defense: {
+      add: {
+        "Interior Defense": 20,
+        "Perimeter Defense": -10,
+        Switchability: -10,
+        "Defensive Playmaking": 20,
+        "Stop Creation": 10,
+        Rebounding: 10
+      }
+    }
+  },
   kevonlooney: { offense: { all: -30 } },
-  walkerkessler: { offense: { add: { "Perimeter Shooting": -20, "Free Throws": -20 } } },
   sandromamukelashvili: {
     defense: { add: { "Perimeter Defense": -15, "Interior Defense": -15, "Possession Disruptance": -15, "Switchability": -15, "Stop Creation": -15, "Shot Suppression": -20 } },
     offense: { add: { "Free Throws": 25 } }
   },
   austinreaves: {
     defense: { add: { "Possession Disruptance": -20, "Stop Creation": -20, "Shot Suppression": -20 } },
-    offense: { all: 7 }
+    offense: { all: 7, add: { Finishing: 8, "Perimeter Shooting": 8, "Off-ball Scoring": 15, Gravity: 10 } }
   }
 };
 
