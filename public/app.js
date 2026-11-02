@@ -2008,6 +2008,7 @@ const SHAPE_ADJUSTMENTS = {
     }
   },
   kevonlooney: { offense: { all: -30 } },
+  adembona: { offense: { add: { "Perimeter Shooting": -20, "Free Throws": -20 } } },
   sandromamukelashvili: {
     defense: { add: { "Perimeter Defense": -15, "Interior Defense": -15, "Possession Disruptance": -15, "Switchability": -15, "Stop Creation": -15, "Shot Suppression": -20 } },
     offense: { add: { "Free Throws": 25 } }
