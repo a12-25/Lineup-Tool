@@ -473,6 +473,7 @@ function formatLabel(value) {
 
 function formatMetric(value, key = "") {
   if (value === null || value === undefined || value === "") return "Not available";
+  if (key === "ratingProjection" && typeof value === "number") return value.toFixed(1);
   const percentageFields = [
     "opponentTs",
     "threePointPercentage",
@@ -655,13 +656,19 @@ function renderLineupOverviewPlayers(players) {
 
 function renderRatingProjections(ratings) {
   ratingGrid.replaceChildren();
-  Object.entries(ratings).forEach(([label, value]) => {
+  const off = Number(ratings.OFF);
+  const def = Number(ratings.DEF);
+  const entries = Object.entries(ratings).map(([label, value]) =>
+    label === "NET" && Number.isFinite(off) && Number.isFinite(def)
+      ? [label, Math.round((off - def) * 10) / 10]
+      : [label, value]);
+  entries.forEach(([label, value]) => {
     const card = document.createElement("article");
     card.className = "rating-card";
     const title = document.createElement("span");
     title.textContent = label;
     const rating = document.createElement("strong");
-    animateMetricValue(rating, value);
+    animateMetricValue(rating, value, "ratingProjection");
     const source = document.createElement("small");
     source.textContent = "PTS / 100 POSS";
     card.append(title, rating, source);
