@@ -1857,6 +1857,7 @@ const SHAPE_ADJUSTMENTS = {
     defense: { set: { "Perimeter Defense": 77 } },
     offense: { add: { "Perimeter Shooting": 30, "Free Throws": 30 } }
   },
+  stephencurry: { offense: { all: 20, exclude: ["Rebounding"], max: 99 } },
   lukadoncic: { offense: { add: { "Free Throws": 40, "Perimeter Shooting": 15 } } },
   jakelaravia: { offense: { add: { "Perimeter Shooting": 30 } } },
   walkerkessler: {
@@ -1887,8 +1888,9 @@ function adjustShapeRating(playerName, side, attribute) {
   const rule = SHAPE_ADJUSTMENTS[normalizePlayerIdLookup(playerName)]?.[side];
   if (!rule) return attribute.rating;
   if (rule.set && rule.set[attribute.name] !== undefined) return rule.set[attribute.name];
+  if (rule.exclude?.includes(attribute.name)) return attribute.rating;
   const delta = (rule.all || 0) + ((rule.add && rule.add[attribute.name]) || 0);
-  return Math.max(1, Math.min(99, attribute.rating + delta));
+  return Math.max(1, Math.min(rule.max || 99, attribute.rating + delta));
 }
 function renderShapes(playerName, swap = false) {
   const shape = currentPlayerShapes.get(normalizePlayerName(playerName));
