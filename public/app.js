@@ -36,6 +36,9 @@ let currentLineupNames = [];
 let currentProfiles = new Map();
 let lastSuccessfulLineupKey = null;
 let nbaPlayerIds = {};
+let nbaPlayerBirthdates = {};
+let currentUsageOptions = { offense: [], defense: [] };
+let selectedSystem = { offense: null, defense: null };
 const playerPickers = new WeakMap();
 let jsonpRequestId = 0;
 let selectedNetPoint = null;
@@ -44,6 +47,19 @@ let chartRevealObserver = null;
 let chartRevealFrame = 0;
 let chartRevealPlayedForLineup = false;
 let chartRevealRects = [];
+let lastLineupData = null;
+let currentPlayerSeries = new Map();
+let currentPlayerShapes = new Map();
+const DEMO_OFFENSE_SHAPE = [
+  "Shot Creating", "Playmaking", "Finishing", "Perimeter Shooting", "Free Throws",
+  "Off-ball Scoring", "Ball Security", "Rebounding", "Gravity", "Pace Acceleration"
+];
+const DEMO_DEFENSE_SHAPE = [
+  "Perimeter Defense", "Interior Defense", "Switchability", "Defensive Playmaking",
+  "Possession Disruptance", "Stop Creation", "Rebounding", "Shot Suppression"
+];
+let spotlightOpen = false;
+let spotlightBusy = false;
 const themeColors = {
   primary: "#1d4ed8",
   secondary: "#0369a1"
@@ -215,6 +231,39 @@ async function apiRequest(path, options = {}) {
     if (selected.some(player => !player)) throw new Error("Choose players from the demo roster.");
     const offensiveRoles = ["Primary Initiator", "Perimeter Specialist", "Off-Ball Wing", "Pick and Pop Big", "Interior Finisher"];
     const defensiveRoles = ["Point of Attack", "Chaser", "Wing Stopper", "Switch Big", "Post Defender"];
+    const demoJobLabels = {
+      offense: {
+        engine: "Primary Engine", handler: "Secondary Handler", spacer: "Spot-Up Spacer",
+        mover: "Movement Shooter", connector: "Connective Playmaker", roller: "Roll/Dive Finisher",
+        cutter: "Cutter", hub: "Playmaking Hub", popper: "Pick-and-Pop Threat", post: "Post Hub"
+      },
+      defense: {
+        poa: "Point-of-Attack Defender", wing: "Wing Stopper", switch: "Switch Defender",
+        anchor: "Rim Anchor", mobileBig: "Mobile Big", helper: "Helpside Defender",
+        pressure: "Ball Pressure", hide: "Low-Usage Hide"
+      }
+    };
+    const demoSystemOptions = (side, templates) => templates.map(([system, jobs, score]) => ({
+      system,
+      score,
+      usefulPlayers: jobs.filter(Boolean).length,
+      assignments: names.map((name, index) => ({
+        player: name,
+        job: jobs[index],
+        jobLabel: demoJobLabels[side][jobs[index]] || jobs[index],
+        fit: Math.round((55 + index * 6) * 10) / 10
+      }))
+    }));
+    const offenseOptions = demoSystemOptions("offense", [
+      ["4-Out + Roamer", ["engine", "spacer", "connector", "popper", "roller"], 78.4],
+      ["5-Out Drive-and-Kick", ["engine", "spacer", "spacer", "spacer", "popper"], 74.1],
+      ["Spread Pick-and-Roll", ["engine", "spacer", "mover", "cutter", "roller"], 71.6]
+    ]);
+    const defenseOptions = demoSystemOptions("defense", [
+      ["Switch 1-5", ["switch", "switch", "switch", "switch", "mobileBig"], 76.2],
+      ["Drop and Contain", ["poa", "wing", "wing", "helper", "anchor"], 73.5],
+      ["Hedge and Recover", ["pressure", "wing", "wing", "helper", "mobileBig"], 70.9]
+    ]);
     const keys = names.map(name => name.toLowerCase().replace(/[^a-z0-9]+/g, ""));
     const profileIndex = names.indexOf(profilePlayer);
     if (profileIndex < 0) throw new Error("Choose a profile player from the selected lineup.");
@@ -274,6 +323,12 @@ async function apiRequest(path, options = {}) {
       }
     };
 
+    const demoLineupNet = [
+      0.8, 3.5, 7.8, 4.5, 5.1, 6.2, 9.3, 10.8, 7.6, 11.4,
+      12.8, 10.6, 6.2, 5.1, 0.7, 0.5, 3.2, 1.8, 2.9, -1.4,
+      -5.9, -10.2, -8.9, -12.2, -16.3
+    ];
+
     return {
       players: selected.map((player, index) => ({
         player: player.player,
@@ -298,11 +353,13 @@ async function apiRequest(path, options = {}) {
         rimProtection: 84
       },
       usage: {
-        offense: "4-Out + Roamer",
+        offense: offenseOptions[0].system,
         initiator: names[offensiveRoles.indexOf("Primary Initiator")] || names[0],
-        defense: "Switching",
+        defense: defenseOptions[0].system,
         offRebounding: "Strong",
-        defRebounding: "Strong"
+        defRebounding: "Strong",
+        offenseOptions,
+        defenseOptions
       },
       performance: selected.map((player, index) => ({
         player: player.player,
@@ -311,11 +368,27 @@ async function apiRequest(path, options = {}) {
         load: 64 + index * 5,
         fit: 54 + index * 2
       })),
-      netRatingOverTime: [
-        0.8, 3.5, 7.8, 4.5, 5.1, 6.2, 9.3, 10.8, 7.6, 11.4,
-        12.8, 10.6, 6.2, 5.1, 0.7, 0.5, 3.2, 1.8, 2.9, -1.4,
-        -5.9, -10.2, -8.9, -12.2, -16.3
-      ].map((netRating, minute) => ({ minute, netRating })),
+      netRatingOverTime: demoLineupNet.map((netRating, minute) => ({ minute, netRating })),
+      playerNetRatingOverTime: selected.map((player, index) => ({
+        player: player.player,
+        series: demoLineupNet.map((net, minute) => {
+          const weight = [0.28, 0.24, 0.2, 0.16, 0.12][index];
+          const wobble = Math.sin((minute + index * 3) / 2.4) * (3 - index * 0.4);
+          const share = net * weight + wobble * 0.5;
+          return { minute, netRating: Math.round(share * 10) / 10 };
+        })
+      })),
+      playerShapes: selected.map((player, index) => ({
+        player: player.player,
+        offense: DEMO_OFFENSE_SHAPE.map((name, attribute) => ({
+          name,
+          rating: 38 + ((index * 13 + attribute * 17) % 58)
+        })),
+        defense: DEMO_DEFENSE_SHAPE.map((name, attribute) => ({
+          name,
+          rating: 34 + ((index * 11 + attribute * 19) % 60)
+        }))
+      })),
       profile
     };
   }
@@ -600,8 +673,13 @@ const CHART_NS = "http://www.w3.org/2000/svg";
 const CHART_HEIGHT = 450;
 const CHART_TOP = 24;
 const CHART_BOTTOM = 380;
-const CHART_MINIMUM = -40;
-const CHART_MAXIMUM = 40;
+let CHART_MINIMUM = -40;
+let CHART_MAXIMUM = 40;
+
+function setChartRange(limit) {
+  CHART_MINIMUM = -limit;
+  CHART_MAXIMUM = limit;
+}
 
 function svgElement(tag, attributes = {}) {
   const element = document.createElementNS(CHART_NS, tag);
@@ -650,7 +728,7 @@ function observeChartAxisReveal(geometry) {
     chartRevealPlayedForLineup = true;
     const startedAt = performance.now();
     const animateReveal = timestamp => {
-      const progress = Math.min(1, (timestamp - startedAt) / 1000);
+      const progress = Math.max(0, Math.min(1, (timestamp - startedAt) / 1000));
       const easedProgress = 1 - (1 - progress) ** 3;
       reveal(geometry.plotWidth * easedProgress);
       if (progress < 1) {
@@ -669,7 +747,7 @@ function chartPoint(point, geometry) {
     minute: point.minute,
     value: point.netRating,
     x: geometry.left + (point.minute / 24) * geometry.plotWidth,
-    y: geometry.top + ((CHART_MAXIMUM - point.netRating) / (CHART_MAXIMUM - CHART_MINIMUM)) * geometry.plotHeight
+    y: geometry.top + ((CHART_MAXIMUM - Math.max(CHART_MINIMUM, Math.min(CHART_MAXIMUM, point.netRating))) / (CHART_MAXIMUM - CHART_MINIMUM)) * geometry.plotHeight
   };
 }
 
@@ -682,9 +760,11 @@ function formatSignedRating(value) {
 
 function addChartAxes(svg, geometry) {
   const grid = svgElement("g", { "aria-hidden": "true" });
-  for (let rating = CHART_MINIMUM; rating <= CHART_MAXIMUM; rating += 5) {
-    const y = geometry.top + ((CHART_MAXIMUM - rating) / 80) * geometry.plotHeight;
-    const major = rating % 10 === 0;
+  const fineScale = CHART_MAXIMUM <= 10;
+  const step = fineScale ? 1 : 5;
+  for (let rating = CHART_MINIMUM; rating <= CHART_MAXIMUM; rating += step) {
+    const y = geometry.top + ((CHART_MAXIMUM - rating) / (CHART_MAXIMUM - CHART_MINIMUM)) * geometry.plotHeight;
+    const major = rating % (fineScale ? 2 : 10) === 0;
     grid.append(svgElement("line", {
       x1: geometry.left,
       x2: geometry.right,
@@ -1023,6 +1103,118 @@ function renderKeyValues(container, values, labels = {}) {
   });
 }
 
+function renderUsageStaticRow(container, label, value) {
+  const row = document.createElement("div");
+  row.className = "metric-row";
+  const labelEl = document.createElement("span");
+  labelEl.textContent = label;
+  const metric = document.createElement("strong");
+  metric.textContent = formatMetric(value, "");
+  row.append(labelEl, metric);
+  container.append(row);
+}
+
+function renderUsageSystemRow(container, side, label, width) {
+  const options = currentUsageOptions[side] || [];
+  const row = document.createElement("div");
+  row.className = "metric-row metric-row-select";
+  const labelEl = document.createElement("span");
+  labelEl.textContent = label;
+  const select = document.createElement("select");
+  select.className = "usage-system-select";
+  select.setAttribute("aria-label", `${label} system`);
+  if (width) select.style.width = width;
+  options.forEach(option => {
+    select.add(new Option(option.system, option.system));
+  });
+  if (options.length) {
+    select.value = selectedSystem[side] || options[0].system;
+  } else {
+    select.disabled = true;
+    select.add(new Option("Not available", ""));
+  }
+  select.addEventListener("change", () => {
+    selectedSystem[side] = select.value;
+    refreshProfileForSelectedSystems();
+  });
+  row.append(labelEl, select);
+  container.append(row);
+}
+
+function renderUsagePanel(usage, preserveSelection = false) {
+  usageProjection.replaceChildren();
+  currentUsageOptions = {
+    offense: Array.isArray(usage.offenseOptions) ? usage.offenseOptions : [],
+    defense: Array.isArray(usage.defenseOptions) ? usage.defenseOptions : []
+  };
+  const previousSelection = preserveSelection ? selectedSystem : { offense: null, defense: null };
+  selectedSystem = {
+    offense: currentUsageOptions.offense.some(option => option.system === (previousSelection.offense || usage.offense))
+      ? (previousSelection.offense || usage.offense)
+      : currentUsageOptions.offense[0]?.system || null,
+    defense: currentUsageOptions.defense.some(option => option.system === (previousSelection.defense || usage.defense))
+      ? (previousSelection.defense || usage.defense)
+      : currentUsageOptions.defense[0]?.system || null
+  };
+
+  const allSystemNames = [...currentUsageOptions.offense, ...currentUsageOptions.defense]
+    .map(option => option.system || "");
+  const widestNameLength = allSystemNames.reduce((max, name) => Math.max(max, name.length), 0);
+  const selectWidth = widestNameLength ? `${widestNameLength + 3}ch` : null;
+
+  if (currentUsageOptions.offense.length) {
+    renderUsageSystemRow(usageProjection, "offense", "Offense", selectWidth);
+  } else {
+    renderUsageStaticRow(usageProjection, "Offense", usage.offense);
+  }
+  renderUsageStaticRow(usageProjection, "Initiator", usage.initiator);
+  if (currentUsageOptions.defense.length) {
+    renderUsageSystemRow(usageProjection, "defense", "Defense", selectWidth);
+  } else {
+    renderUsageStaticRow(usageProjection, "Defense", usage.defense);
+  }
+  renderUsageStaticRow(usageProjection, "Offensive Rebounding", usage.offRebounding);
+  renderUsageStaticRow(usageProjection, "Defensive Rebounding", usage.defRebounding);
+}
+
+function findSystemAssignment(side, playerName) {
+  const options = currentUsageOptions[side] || [];
+  const system = selectedSystem[side];
+  const option = options.find(candidate => candidate.system === system);
+  if (!option || !Array.isArray(option.assignments)) return null;
+  const normalizedTarget = normalizePlayerName(playerName);
+  return option.assignments.find(assignment => normalizePlayerName(assignment.player) === normalizedTarget) || null;
+}
+
+function refreshProfileForSelectedSystems() {
+  const activeName = profileSelect && profileSelect.value;
+  if (!activeName) return;
+  const profile = currentProfiles.get(normalizePlayerName(activeName));
+  if (profile) renderProfile(profile);
+}
+
+function getPlayerBirthdate(playerName) {
+  const iso = nbaPlayerBirthdates[normalizePlayerIdLookup(playerName)];
+  if (!iso) return null;
+  const parts = String(iso).split("-").map(Number);
+  if (parts.length !== 3 || parts.some(Number.isNaN)) return null;
+  const [year, month, day] = parts;
+  return { year, month, day };
+}
+
+function getPlayerAgeInfo(playerName, fallbackAge) {
+  const birthdate = getPlayerBirthdate(playerName);
+  if (!birthdate) return { age: fallbackAge, isBirthday: false };
+  const today = new Date();
+  const todayMonth = today.getMonth() + 1;
+  const todayDay = today.getDate();
+  const hasHadBirthdayThisYear = todayMonth > birthdate.month ||
+    (todayMonth === birthdate.month && todayDay >= birthdate.day);
+  const age = today.getFullYear() - birthdate.year - (hasHadBirthdayThisYear ? 0 : 1);
+  const isBirthday = todayMonth === birthdate.month && todayDay === birthdate.day;
+  return { age, isBirthday };
+}
+
 function renderProfile(profile) {
   profileContent.replaceChildren();
   if (!profile) {
@@ -1032,8 +1224,18 @@ function renderProfile(profile) {
 
   profileContent.append(createPlayerPortrait(profile.player, "profile-headshot-frame"));
 
+  const offenseAssignment = findSystemAssignment("offense", profile.player);
+  const defenseAssignment = findSystemAssignment("defense", profile.player);
+  const ageInfo = getPlayerAgeInfo(profile.player, profile.bio?.age);
+  const bio = {
+    ...profile.bio,
+    offensiveRole: offenseAssignment ? offenseAssignment.jobLabel : profile.bio?.offensiveRole,
+    defensiveRole: defenseAssignment ? defenseAssignment.jobLabel : profile.bio?.defensiveRole,
+    age: ageInfo.age
+  };
+
   const sections = [
-    ["Bio", profile.bio, {
+    ["Bio", bio, {
       position: "Position",
       offensiveRole: "OFF Role",
       defensiveRole: "DEF Role",
@@ -1100,6 +1302,12 @@ function renderProfile(profile) {
       metric.textContent = isLoadShare && value !== null && value !== undefined && value !== ""
         ? `${formatMetric(value, key)}%`
         : formatMetric(value, key);
+      if (title === "Bio" && key === "age" && ageInfo.isBirthday) {
+        const badge = document.createElement("span");
+        badge.className = "age-birthday-badge";
+        badge.textContent = " (Happy Birthday! \u{1F973})";
+        metric.append(badge);
+      }
       fields.append(label, metric);
     });
     details.append(summary, fields);
@@ -1287,9 +1495,10 @@ function populateProfileSelector(players) {
   players.forEach(player => profileSelect.add(new Option(player.player, player.player)));
   profileSelect.value = "";
   profileSelect.disabled = false;
+  updateSpotlightButton();
 }
 
-function renderResults(data, selectedNames) {
+function renderLineupSections(data, preserveSystems = false) {
   renderLineupOverviewPlayers(data.players);
   renderMetricGrid(overviewGrid, data.overview);
   renderRatingProjections(data.ratingProjections);
@@ -1315,15 +1524,23 @@ function renderResults(data, selectedNames) {
     turnoverCreation: "Turnover Creation",
     rimProtection: "Rim Protection"
   });
-  renderKeyValues(usageProjection, data.usage, {
-    offense: "Offense",
-    initiator: "Initiator",
-    defense: "Defense",
-    offRebounding: "Offensive Rebounding",
-    defRebounding: "Defensive Rebounding"
-  });
+  renderUsagePanel(data.usage || {}, preserveSystems);
   renderPerformance(data);
+  setChartRange(40);
   renderNetRatingChart(data.netRatingOverTime, true);
+}
+
+function renderResults(data, selectedNames) {
+  lastLineupData = data;
+  currentPlayerShapes = new Map((data.playerShapes || []).map(entry => [
+    normalizePlayerName(entry.player),
+    entry
+  ]));
+  currentPlayerSeries = new Map((data.playerNetRatingOverTime || []).map(entry => [
+    normalizePlayerName(entry.player),
+    entry.series
+  ]));
+  renderLineupSections(data);
   currentLineupNames = selectedNames;
   currentProfiles = new Map((data.profiles || []).map(profile => [
     normalizePlayerName(profile.player),
@@ -1339,12 +1556,16 @@ function renderResults(data, selectedNames) {
 
 async function initialize() {
   try {
-    const [players, playerIdsResponse] = await Promise.all([
+    const [players, playerIdsResponse, birthdatesResponse] = await Promise.all([
       apiRequest("players"),
-      fetch("./data/nba-player-ids.json").catch(() => null)
+      fetch("./data/nba-player-ids.json").catch(() => null),
+      fetch("./data/nba-player-birthdates.json").catch(() => null)
     ]);
     if (playerIdsResponse?.ok) {
       nbaPlayerIds = await playerIdsResponse.json().catch(() => ({}));
+    }
+    if (birthdatesResponse?.ok) {
+      nbaPlayerBirthdates = await birthdatesResponse.json().catch(() => ({}));
     }
     lineupForm.querySelectorAll("select").forEach(select => {
       select.replaceChildren(new Option("Choose a player", ""));
@@ -1402,7 +1623,217 @@ async function updateSelectedProfile(profilePlayer) {
   }
 }
 
+const lineupView = document.getElementById("lineupView");
+const spotlightView = document.getElementById("spotlightView");
+const spotlightHeading = document.getElementById("spotlightHeading");
+const spotlightClose = document.getElementById("spotlightClose");
+const spotlightOpenButton = document.getElementById("spotlightOpen");
+const spotlightChartSection = document.getElementById("spotlightChartSection");
+const lineupChartSection = lineupView.querySelector(".net-rating-section");
+const mainColumn = document.querySelector(".main-column");
+const SPOTLIGHT_SLIDE_MS = 300;
+const SPOTLIGHT_GLOW_MS = 280;
+const SPOTLIGHT_SLIDE_DISTANCE = "calc(100% + 28px)";
+
+function spotlightSeriesFor(playerName) {
+  return currentPlayerSeries.get(normalizePlayerName(playerName)) || null;
+}
+
+function updateSpotlightButton() {
+  const hasPlayer = Boolean(profileSelect.value) && currentLineupNames.length > 0;
+  const hasData = hasPlayer && Boolean(spotlightSeriesFor(profileSelect.value));
+  spotlightOpenButton.disabled = spotlightOpen || spotlightBusy || !hasData;
+  spotlightOpenButton.classList.toggle("is-open", spotlightOpen);
+  spotlightOpenButton.textContent = spotlightOpen ? "Spotlight Open" : "Open Player Spotlight";
+  spotlightOpenButton.title = hasPlayer && !hasData
+    ? "Spotlight data is not available for this lineup."
+    : "";
+  spotlightClose.disabled = spotlightBusy;
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function wait(milliseconds) {
+  return new Promise(resolve => window.setTimeout(resolve, milliseconds));
+}
+
+async function slidePane(pane, from, to) {
+  if (prefersReducedMotion() || !pane.animate) return null;
+  const animation = pane.animate(
+    [{ transform: from }, { transform: to }],
+    { duration: SPOTLIGHT_SLIDE_MS, easing: "cubic-bezier(0.65, 0, 0.35, 1)", fill: "forwards" }
+  );
+  await animation.finished.catch(() => {});
+  return animation;
+}
+
+async function swapPanes(outgoing, incoming, prepareIncoming) {
+  spotlightBusy = true;
+  updateSpotlightButton();
+  mainColumn.classList.add("is-transitioning");
+  try {
+    if (!prefersReducedMotion() && !window.matchMedia("(max-width: 900px)").matches) {
+      profilePanel.classList.add("is-glowing");
+      await wait(SPOTLIGHT_GLOW_MS);
+    }
+    const outgoingAnimation = await slidePane(outgoing, "translateX(0)", `translateX(${SPOTLIGHT_SLIDE_DISTANCE})`);
+    outgoing.hidden = true;
+    outgoingAnimation?.cancel();
+    prepareIncoming();
+    incoming.hidden = false;
+    const incomingAnimation = await slidePane(incoming, `translateX(${SPOTLIGHT_SLIDE_DISTANCE})`, "translateX(0)");
+    incomingAnimation?.cancel();
+  } finally {
+    profilePanel.classList.remove("is-glowing");
+    await wait(SPOTLIGHT_GLOW_MS);
+    mainColumn.classList.remove("is-transitioning");
+    spotlightBusy = false;
+    updateSpotlightButton();
+  }
+}
+
+function revealWhenVisible(element, callback) {
+  if (!("IntersectionObserver" in window)) {
+    callback();
+    return () => {};
+  }
+  const observer = new IntersectionObserver(entries => {
+    if (!entries.some(entry => entry.isIntersecting)) return;
+    observer.disconnect();
+    callback();
+  });
+  observer.observe(element);
+  return () => observer.disconnect();
+}
+
+const SHAPE_COLORS = [
+  "#f97316", "#eab308", "#22c55e", "#14b8a6", "#38bdf8",
+  "#6366f1", "#a855f7", "#ec4899", "#ef4444", "#84cc16"
+];
+const SHAPE_COLORS_LIGHT = [
+  "#d9561f", "#2e9d4f", "#8e44ad", "#c99a00", "#2a86c8",
+  "#c62828", "#0f8f8f", "#d6336c", "#8d5a3b", "#4b4fc4"
+];
+const shapeColorsForTheme = () =>
+  document.documentElement.dataset.theme === "light" ? SHAPE_COLORS_LIGHT : SHAPE_COLORS;
+new MutationObserver(() => {
+  if (spotlightOpen && profileSelect.value) renderShapes(profileSelect.value, true);
+}).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+const spotlightShapes = document.getElementById("spotlightShapes");
+const shapePause = document.getElementById("shapePause");
+shapePause.addEventListener("click", () => {
+  const paused = shapePause.getAttribute("aria-pressed") !== "true";
+  shapePause.setAttribute("aria-pressed", String(paused));
+  const label = paused ? "Resume graphs" : "Pause graphs";
+  shapePause.setAttribute("aria-label", label);
+  shapePause.title = label;
+  shapeColumns.forEach(column => column.radar.setPaused(paused));
+});
+const shapeColumns = [...spotlightShapes.querySelectorAll(".shape-column")].map(column => {
+  const canvas = column.querySelector("canvas");
+  return {
+    side: column.dataset.side,
+    canvas,
+    list: column.querySelector("ul"),
+    radar: window.createShapeRadar(canvas),
+    cancelReveal: null
+  };
+});
+
+function renderShapeAttributes(column, attributes, swap = false) {
+  // Swaps wait only for the old shape to collapse; first loads also wait for the axes to open.
+  const delay = swap ? 250 : 300;
+  column.cancelReveal?.();
+  column.list.replaceChildren();
+  const rows = attributes.map(attribute => {
+    const hasRating = Number.isFinite(attribute.rating);
+    const item = document.createElement("li");
+    item.className = "shape-attribute";
+    item.style.setProperty("--attr-color", attribute.color);
+    item.style.setProperty("--attr-delay", `${delay}ms`);
+    item.style.setProperty("--attr-fill", `${hasRating ? Math.max(0, Math.min(99, attribute.rating)) / 99 * 100 : 0}%`);
+    const name = document.createElement("span");
+    name.className = "shape-attr-name";
+    name.textContent = attribute.name;
+    const value = document.createElement("strong");
+    value.className = "shape-attr-value";
+    value.textContent = hasRating ? "0" : "N/A";
+    const bar = document.createElement("div");
+    bar.className = "shape-attr-bar";
+    item.append(name, value, bar);
+    column.list.append(item);
+    return { item, value, rating: attribute.rating, hasRating };
+  });
+  column.cancelReveal = revealWhenVisible(column.list, () => {
+    rows.forEach(({ item, value, rating, hasRating }) => {
+      if (!hasRating) return;
+      setTimeout(() => animateMetricValue(value, rating, "", null, 500), delay);
+      item.classList.add("is-animated");
+    });
+  });
+}
+
+function renderShapes(playerName, swap = false) {
+  const shape = currentPlayerShapes.get(normalizePlayerName(playerName));
+  spotlightShapes.hidden = !shape;
+  if (!shape) return;
+  const palette = shapeColorsForTheme();
+  shapeColumns.forEach(column => {
+    const attributes = shape[column.side].map((attribute, index) => ({
+      name: attribute.name,
+      rating: attribute.rating,
+      color: palette[index % palette.length]
+    }));
+    column.canvas.setAttribute(
+      "aria-label",
+      `${playerName} ${column.side} shape radar. Drag or use arrow keys to rotate.`
+    );
+    column.radar.setData(attributes, { swap });
+    renderShapeAttributes(column, attributes, swap);
+  });
+}
+
+function renderSpotlightPlayer(playerName, swap = false) {
+  const series = spotlightSeriesFor(playerName);
+  if (!series) return;
+  spotlightHeading.textContent = `Player Spotlight: ${playerName}`;
+  renderShapes(playerName, swap);
+  netRatingChart.setAttribute("aria-label", `${playerName} net rating contribution from minute 0 through minute 24`);
+  setChartRange(10);
+  renderNetRatingChart(series, true);
+}
+
+async function openSpotlight() {
+  if (spotlightOpen || spotlightBusy || !spotlightSeriesFor(profileSelect.value)) return;
+  const playerName = profileSelect.value;
+  setProfileDrawerOpen(false);
+  await swapPanes(lineupView, spotlightView, () => {
+    spotlightChartSection.append(netRatingChart);
+    spotlightOpen = true;
+    window.scrollTo(0, 0);
+    renderSpotlightPlayer(playerName);
+  });
+}
+
+async function closeSpotlight() {
+  if (!spotlightOpen || spotlightBusy) return;
+  await swapPanes(spotlightView, lineupView, () => {
+    lineupChartSection.append(netRatingChart);
+    netRatingChart.setAttribute("aria-label", "Net rating from minute 0 through minute 24");
+    spotlightOpen = false;
+    window.scrollTo(0, 0);
+    if (lastLineupData) renderLineupSections(lastLineupData, true);
+  });
+}
+
+spotlightOpenButton.addEventListener("click", openSpotlight);
+spotlightClose.addEventListener("click", closeSpotlight);
+
 profileSelect.addEventListener("change", () => {
+  updateSpotlightButton();
+  if (spotlightOpen && profileSelect.value) renderSpotlightPlayer(profileSelect.value, true);
   if (!profileSelect.value) {
     renderProfile(null);
     return;

@@ -47,6 +47,10 @@ Net Rating Over Time uses the same pure 24-minute stint simulation as `GRAPH_Cal
 
 The API preserves the spreadsheet's groups: overview ratings; offensive projections (shot balance, offensive rebounding, OFF rating, 3P%, TS%); defensive projections (opponent TS%, defensive rebounding, DEF rating, turnover creation, rim protection); five optimal-usage outputs; player performance (OFF, DEF, LOAD, FIT); and the selected player's bio, offensive/defensive load, shot profile, efficiency, expected defense, and expected impact. Percentage values are normalized to fractions in JSON and rendered as percentages in the browser.
 
+The optimal-usage block is produced by the spreadsheet's "system-fit v2" engine (`LINEUP_Usage.gs` / `apps-script/ProjectionApi.gs`), which searches all 120 player-to-job permutations across 17 offensive and 14 defensive system templates. In addition to the top-ranked `usage.offense` / `usage.defense` strings, the response includes `usage.offenseOptions` / `usage.defenseOptions` — the full ranked list of candidate systems, each with a fit score and a per-player job assignment (`{ player, job, jobLabel, fit }`). The browser UI renders these as dropdowns next to the Offense/Defense rows; picking a different system there immediately updates the selected player's profile panel ("System Fit" section) with that system's role and fit for them, entirely client-side (no extra network round-trip). If an older Apps Script deployment or a degraded Azure/spreadsheet bridge response omits `offenseOptions`/`defenseOptions`, the UI falls back to the plain top-ranked system text as before.
+
+Remember to re-copy the updated `LINEUP_Usage.gs` and `apps-script/ProjectionApi.gs` into the live Google Apps Script project (see below) for these fields to appear in production.
+
 ## Privacy limits
 
 - The API never returns the complete `raw` records; its roster endpoint returns names and positions, and its lineup endpoint returns calculations plus sanitized profiles for the five selected players. OFF, DEF, NET, and the four Lineup Overview ratings come from the spreadsheet's projection formulas, not averages of individual DPM values.

@@ -15,6 +15,30 @@ const DEFENSIVE_PROJECTION_FIELDS = [
   "rimProtection"
 ];
 const USAGE_FIELDS = ["offense", "initiator", "defense", "offRebounding", "defRebounding"];
+
+function sanitizeSystemOption(option) {
+  if (!option || typeof option.system !== "string" || !option.system.trim()) return null;
+  if (!Array.isArray(option.assignments)) return null;
+  const assignments = option.assignments
+    .filter(assignment => assignment && assignment.player && assignment.job)
+    .map(assignment => ({
+      player: String(assignment.player),
+      job: String(assignment.job),
+      jobLabel: String(assignment.jobLabel || assignment.job),
+      fit: Number.isFinite(Number(assignment.fit)) ? Number(assignment.fit) : null
+    }));
+  if (!assignments.length) return null;
+  return {
+    system: option.system,
+    score: Number.isFinite(Number(option.score)) ? Number(option.score) : null,
+    usefulPlayers: Number.isFinite(Number(option.usefulPlayers)) ? Number(option.usefulPlayers) : null,
+    assignments
+  };
+}
+
+function sanitizeSystemOptions(options) {
+  return Array.isArray(options) ? options.map(sanitizeSystemOption).filter(Boolean) : [];
+}
 const PROFILE_FIELDS = {
   bio: ["position", "offensiveRole", "defensiveRole", "age", "value"],
   offensiveLoad: ["creation", "shots", "initiatorRank", "gravity", "rebounding"],
@@ -32,6 +56,52 @@ const PROFILE_FIELDS = {
     "netRating"
   ]
 };
+
+function sanitizePlayerSeries(entries, lineupPlayers) {
+  if (!Array.isArray(entries)) return [];
+  const names = new Set((lineupPlayers || []).map(player => player.player));
+  return entries
+    .filter(entry =>
+      entry && names.has(entry.player) && Array.isArray(entry.series) &&
+      entry.series.length === 25 &&
+      entry.series.every((point, index) =>
+        Number(point?.minute) === index &&
+        point.netRating !== null &&
+        point.netRating !== undefined &&
+        Number.isFinite(Number(point.netRating))
+      )
+    )
+    .map(entry => ({
+      player: entry.player,
+      series: entry.series.map(point => ({
+        minute: Number(point.minute),
+        netRating: Number(point.netRating)
+      }))
+    }));
+}
+
+function sanitizeShapeAttributes(attributes, expectedCount) {
+  if (!Array.isArray(attributes) || attributes.length !== expectedCount) return null;
+  const cleaned = attributes.map(attribute => {
+    const rating = attribute?.rating;
+    const valid = rating === null || (typeof rating === "number" && Number.isFinite(rating));
+    return typeof attribute?.name === "string" && valid
+      ? { name: attribute.name, rating }
+      : null;
+  });
+  return cleaned.every(Boolean) ? cleaned : null;
+}
+
+function sanitizePlayerShapes(entries, lineupPlayers) {
+  if (!Array.isArray(entries)) return [];
+  const names = new Set((lineupPlayers || []).map(player => player.player));
+  return entries.flatMap(entry => {
+    if (!entry || !names.has(entry.player)) return [];
+    const offense = sanitizeShapeAttributes(entry.offense, 10);
+    const defense = sanitizeShapeAttributes(entry.defense, 8);
+    return offense && defense ? [{ player: entry.player, offense, defense }] : [];
+  });
+}
 
 function hasFields(record, fields) {
   return record && fields.every(field => Object.hasOwn(record, field));
@@ -134,7 +204,15 @@ export async function fetchSpreadsheetProjections(players, profilePlayer = playe
     defensiveProjections: Object.fromEntries(
       DEFENSIVE_PROJECTION_FIELDS.map(key => [key, Number(body.defensiveProjections[key])])
     ),
-    usage: Object.fromEntries(USAGE_FIELDS.map(key => [key, body.usage[key]])),
+    usage: (() => {
+      const offenseOptions = sanitizeSystemOptions(body.usage.offenseOptions);
+      const defenseOptions = sanitizeSystemOptions(body.usage.defenseOptions);
+      return {
+        ...Object.fromEntries(USAGE_FIELDS.map(key => [key, body.usage[key]])),
+        ...(offenseOptions.length ? { offenseOptions } : {}),
+        ...(defenseOptions.length ? { defenseOptions } : {})
+      };
+    })(),
     performance: body.performance.map(player => ({
       player: player.player,
       offense: Number(player.offense),
@@ -146,6 +224,8 @@ export async function fetchSpreadsheetProjections(players, profilePlayer = playe
       minute: Number(point.minute),
       netRating: Number(point.netRating)
     })),
+    playerNetRatingOverTime: sanitizePlayerSeries(body.playerNetRatingOverTime, body.players),
+    playerShapes: sanitizePlayerShapes(body.playerShapes, body.players),
     profile: {
       player: body.profile.player,
       ...Object.fromEntries(

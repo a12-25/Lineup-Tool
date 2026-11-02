@@ -286,34 +286,55 @@ function calculatePrivateLineupProjections_(playerNames, selectedProfileName) {
       turnoverCreation: defensiveProjection.turnoverCreation,
       rimProtection: defensiveProjection.rimProtection
     },
-    usage: {
-      offense: calculateOptimalOffensiveSpacing_(
+    usage: (() => {
+      const recommendations = buildLineupOptimalUsageRecommendations_(
         preparedLineup,
         offensiveRoles,
-        sharedAnalysis.offenseLoads
-      ),
-      initiator: calculateOptimalInitiator_(preparedLineup, offensiveRoles),
-      defense: calculateOptimalDefensiveScheme_(
-        preparedLineup,
         defensiveRoles,
-        sharedAnalysis.defenseLoads
-      ),
-      offRebounding: calculateOptimalOffensiveRebounding_(
-        preparedLineup,
-        offensiveRoles,
-        sharedAnalysis.offenseLoads
-      ),
-      defRebounding: calculateOptimalDefensiveRebounding_(
-        preparedLineup,
-        defensiveRoles,
-        sharedAnalysis.defenseLoads
-      )
-    },
+        sharedAnalysis
+      );
+      return {
+        offense: recommendations.offense[0].system,
+        initiator: calculateOptimalInitiator_(preparedLineup, offensiveRoles),
+        defense: recommendations.defense[0].system,
+        offRebounding: calculateOptimalOffensiveRebounding_(
+          preparedLineup,
+          offensiveRoles,
+          sharedAnalysis.offenseLoads
+        ),
+        defRebounding: calculateOptimalDefensiveRebounding_(
+          preparedLineup,
+          defensiveRoles,
+          sharedAnalysis.defenseLoads
+        ),
+        offenseOptions: recommendations.offense.map(projectionApiSystemOption_),
+        defenseOptions: recommendations.defense.map(projectionApiSystemOption_)
+      };
+    })(),
     performance: playerPerformance,
     netRatingOverTime: stintSimulation.rows.map(row => ({
       minute: row[0],
       netRating: row[1]
     })),
+    playerNetRatingOverTime: stintSimulation.playerImpact
+      ? stintSimulation.playerImpact.players.map((name, index) => ({
+        player: name,
+        series: stintSimulation.playerImpact.rows.map(row => ({
+          minute: row[0],
+          netRating: row[index + 1]
+        }))
+      }))
+      : [],
+    playerShapes: projectionApiPlayerShapes_(
+      playerSheetValues,
+      lineup,
+      projectionApiNaturalScores_(
+        preparedLineup,
+        sharedAnalysis,
+        defensiveRoles,
+        calibration
+      )
+    ),
     ratingProjections: {
       OFF: offensiveProjection.offensiveRating,
       DEF: defensiveProjection.defensiveRating,
@@ -327,6 +348,95 @@ function calculatePrivateLineupProjections_(playerNames, selectedProfileName) {
     },
     profiles,
     profile: selectedProfile
+  };
+}
+
+/**
+ * Offensive (10) and defensive (8) shape ratings for each lineup player, from
+ * PLAYER_Shape_Offense.gs / PLAYER_Shape_Defense.gs. Optional: any failure
+ * returns an empty list so the rest of the projection is unaffected.
+ */
+/**
+ * Calculated (non-overridden) OFF / DEF scores for players that have manual
+ * overrides, used to shift their shape ratings by the override difference.
+ */
+function projectionApiNaturalScores_(preparedLineup, sharedAnalysis, defensiveRoles, calibration) {
+  const scores = {};
+  try {
+    withoutPlayerOverrides_(() => {
+      preparedLineup.forEach(player => {
+        if (!playerOverrideEntry_(player)) return;
+        const key = normalizeBioPlayerName_(player.player);
+        scores[key] = {
+          off: calibratePlayerPerformanceScore_(
+            player,
+            "off",
+            calculatePlayerPerformanceOffScore_(
+              player,
+              sharedAnalysis.offenseLoads[key],
+              calculatePlayerPerformanceOffRaw_(player),
+              calibration.offense
+            )
+          ),
+          def: calibratePlayerPerformanceScore_(
+            player,
+            "def",
+            calculatePlayerPerformanceDefScore_(
+              player,
+              defensiveRoles[key],
+              calculatePlayerPerformanceDefRaw_(player),
+              calibration.defense
+            )
+          )
+        };
+      });
+    });
+  } catch (error) {
+    return {};
+  }
+  return scores;
+}
+
+function projectionApiPlayerShapes_(playerSheetValues, lineup, naturalScores) {
+  try {
+    const shapes = applyPlayerOverridesToShapes_(
+      calculatePlayerShapes_(playerSheetValues),
+      naturalScores
+    );
+    const toAttributes = attributes => attributes.map(attribute => ({
+      name: attribute.name,
+      rating: Number.isFinite(attribute.rating) ? attribute.rating : null
+    }));
+    return lineup
+      .map(player => shapes[normalizeBioPlayerName_(player.player)])
+      .filter(Boolean)
+      .map(shape => ({
+        player: shape.player,
+        offense: toAttributes(shape.offense),
+        defense: toAttributes(shape.defense)
+      }));
+  } catch (error) {
+    return [];
+  }
+}
+
+/**
+ * Shapes a ranked system-fit result (from buildLineupOptimalUsageRecommendations_)
+ * into a lightweight dropdown option: the system name, its heuristic fit
+ * score, and the named player-to-job assignments used to recompute each
+ * player's displayed role when the browser switches systems.
+ */
+function projectionApiSystemOption_(result) {
+  return {
+    system: result.system,
+    score: result.score,
+    usefulPlayers: result.usefulPlayers,
+    assignments: result.assignments.map(assignment => ({
+      player: assignment.player,
+      job: assignment.job,
+      jobLabel: assignment.jobLabel,
+      fit: assignment.fit
+    }))
   };
 }
 

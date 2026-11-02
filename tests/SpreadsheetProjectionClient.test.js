@@ -108,6 +108,33 @@ test("projection client returns the spreadsheet sections and selected profile", 
     assert.equal(result.profile.player, "C");
     assert.equal(Object.hasOwn(result.profile, "raw"), false);
     assert.equal(Object.hasOwn(result.profile.bio, "raw"), false);
+    assert.deepEqual(result.playerNetRatingOverTime, []);
+    assert.deepEqual(result.playerShapes, []);
+
+    globalThis.fetch = async () => ({
+      ok: true,
+      json: async () => {
+        const withPlayers = completeResponse();
+        const series = Array.from({ length: 25 }, (_, minute) => ({ minute, netRating: minute / 2 }));
+        const attributes = count => Array.from({ length: count }, (_, i) => ({ name: `Attr ${i}`, rating: i === 0 ? null : 50 + i }));
+        withPlayers.playerShapes = [
+          { player: "A", offense: attributes(10), defense: attributes(8) },
+          { player: "B", offense: attributes(9), defense: attributes(8) },
+          { player: "Outsider", offense: attributes(10), defense: attributes(8) }
+        ];
+        withPlayers.playerNetRatingOverTime = [
+          { player: "A", series },
+          { player: "Outsider", series },
+          { player: "B", series: series.slice(1) }
+        ];
+        return withPlayers;
+      }
+    });
+    const withPlayersResult = await fetchSpreadsheetProjections(lineupNames, "C");
+    assert.deepEqual(withPlayersResult.playerNetRatingOverTime.map(entry => entry.player), ["A"]);
+    assert.equal(withPlayersResult.playerNetRatingOverTime[0].series.length, 25);
+    assert.deepEqual(withPlayersResult.playerShapes.map(entry => entry.player), ["A"]);
+    assert.equal(withPlayersResult.playerShapes[0].offense[0].rating, null);
 
     globalThis.fetch = async () => ({
       ok: true,
@@ -147,6 +174,35 @@ test("projection client returns the spreadsheet sections and selected profile", 
       fetchSpreadsheetProjections(lineupNames, "C"),
       /incomplete results/
     );
+
+    globalThis.fetch = async () => ({
+      ok: true,
+      json: async () => {
+        const withOptions = completeResponse();
+        withOptions.usage.offenseOptions = [
+          {
+            system: "4-Out + Roamer",
+            score: 78.4,
+            usefulPlayers: 5,
+            assignments: lineupNames.map((player, index) => ({
+              player,
+              job: "engine",
+              jobLabel: "Primary Engine",
+              fit: 60 + index
+            }))
+          },
+          { system: "Invalid - no assignments", assignments: [] },
+          "not an object"
+        ];
+        withOptions.usage.defenseOptions = null;
+        return withOptions;
+      }
+    });
+    const withOptionsResult = await fetchSpreadsheetProjections(lineupNames, "C");
+    assert.equal(withOptionsResult.usage.offenseOptions.length, 1);
+    assert.deepEqual(withOptionsResult.usage.offenseOptions[0].system, "4-Out + Roamer");
+    assert.equal(withOptionsResult.usage.offenseOptions[0].assignments.length, 5);
+    assert.equal(Object.hasOwn(withOptionsResult.usage, "defenseOptions"), false);
 
     delete process.env.SPREADSHEET_PROJECTION_URL;
     await assert.rejects(
