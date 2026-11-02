@@ -501,6 +501,11 @@ body {
   text-align-last: right;
 }
 
+.metric-row-select .usage-system-select option:checked {
+  background: var(--primary-color);
+  color: #ffffff;
+}
+
 .metric-row-select .usage-system-select:disabled {
   cursor: not-allowed;
   opacity: 0.65;

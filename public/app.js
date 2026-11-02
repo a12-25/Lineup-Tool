@@ -1161,8 +1161,8 @@ function renderUsageSystemRow(container, side, label, width) {
 function renderUsagePanel(usage, preserveSelection = false) {
   usageProjection.replaceChildren();
   currentUsageOptions = {
-    offense: Array.isArray(usage.offenseOptions) ? usage.offenseOptions : [],
-    defense: Array.isArray(usage.defenseOptions) ? usage.defenseOptions : []
+    offense: Array.isArray(usage.offenseOptions) ? usage.offenseOptions.slice(0, 3) : [],
+    defense: Array.isArray(usage.defenseOptions) ? usage.defenseOptions.slice(0, 3) : []
   };
   const previousSelection = preserveSelection ? selectedSystem : { offense: null, defense: null };
   selectedSystem = {
