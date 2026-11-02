@@ -1415,10 +1415,10 @@
     },
     {
         "player":  "Jaden Hardy",
-        "position":  "F",
+        "position":  "G",
         "slots":  [
-                      "SF",
-                      "PF"
+                      "PG",
+                      "SG"
                   ]
     },
     {
@@ -1691,10 +1691,10 @@
     },
     {
         "player":  "Jaylen Brown",
-        "position":  "F",
+        "position":  "G-F",
         "slots":  [
-                      "SF",
-                      "PF"
+                      "SG",
+                      "SF"
                   ]
     },
     {
