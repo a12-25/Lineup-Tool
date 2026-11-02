@@ -1782,19 +1782,24 @@ function renderShapeAttributes(column, attributes, swap = false) {
   });
 }
 
-const SHAPE_DEFENSE_BONUS = { jarredvanderbilt: 17 };
-const SHAPE_RATING_SETS = { offense: { jarredvanderbilt: { Rebounding: 83 } } };
+const SHAPE_ADJUSTMENTS = {
+  jarredvanderbilt: { defense: { all: 17 }, offense: { set: { Rebounding: 83 } } },
+  jadenhardy: { defense: { all: -10 } },
+  collinsexton: { defense: { all: 5 } },
+  quentingrimes: { defense: { set: { "Perimeter Defense": 77 } } },
+  austinreaves: {
+    defense: { add: { "Possession Disruptance": -20, "Stop Creation": -20, "Shot Suppression": -20 } },
+    offense: { all: 7 }
+  }
+};
 
-function adjustOffenseShapeRating(playerName, attribute) {
-  const set = SHAPE_RATING_SETS.offense[normalizePlayerIdLookup(playerName)];
-  return set && set[attribute.name] !== undefined ? set[attribute.name] : attribute.rating;
+function adjustShapeRating(playerName, side, attribute) {
+  const rule = SHAPE_ADJUSTMENTS[normalizePlayerIdLookup(playerName)]?.[side];
+  if (!rule) return attribute.rating;
+  if (rule.set && rule.set[attribute.name] !== undefined) return rule.set[attribute.name];
+  const delta = (rule.all || 0) + ((rule.add && rule.add[attribute.name]) || 0);
+  return Math.max(1, Math.min(99, attribute.rating + delta));
 }
-
-function adjustDefenseShapeRating(playerName, rating) {
-  const bonus = SHAPE_DEFENSE_BONUS[normalizePlayerIdLookup(playerName)] || 0;
-  return bonus ? Math.min(99, rating + bonus) : rating;
-}
-
 function renderShapes(playerName, swap = false) {
   const shape = currentPlayerShapes.get(normalizePlayerName(playerName));
   spotlightShapes.hidden = !shape;
@@ -1803,7 +1808,7 @@ function renderShapes(playerName, swap = false) {
   shapeColumns.forEach(column => {
     const attributes = shape[column.side].map((attribute, index) => ({
       name: attribute.name,
-      rating: column.side === "defense" ? adjustDefenseShapeRating(playerName, attribute.rating) : adjustOffenseShapeRating(playerName, attribute),
+      rating: adjustShapeRating(playerName, column.side, attribute),
       color: palette[index % palette.length]
     }));
     column.canvas.setAttribute(
