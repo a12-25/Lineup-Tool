@@ -1137,25 +1137,94 @@ function renderUsageSystemRow(container, side, label, width) {
   row.className = "metric-row metric-row-select";
   const labelEl = document.createElement("span");
   labelEl.textContent = label;
-  const select = document.createElement("select");
-  select.className = "usage-system-select";
-  select.setAttribute("aria-label", `${label} system`);
-  if (width) select.style.width = width;
-  options.forEach(option => {
-    select.add(new Option(option.system, option.system));
-  });
-  if (options.length) {
-    select.value = selectedSystem[side] || options[0].system;
-  } else {
-    select.disabled = true;
-    select.add(new Option("Not available", ""));
-  }
-  select.addEventListener("change", () => {
-    selectedSystem[side] = select.value;
+  const wrap = document.createElement("div");
+  wrap.className = "system-dropdown";
+  if (width) wrap.style.width = width;
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "usage-system-select";
+  button.setAttribute("aria-label", `${label} system`);
+  button.setAttribute("aria-haspopup", "listbox");
+  button.setAttribute("aria-expanded", "false");
+  const list = document.createElement("ul");
+  list.className = "system-dropdown-list";
+  list.setAttribute("role", "listbox");
+  list.hidden = true;
+
+  const close = () => {
+    list.hidden = true;
+    button.setAttribute("aria-expanded", "false");
+    document.removeEventListener("mousedown", onOutside, true);
+  };
+  const onOutside = event => { if (!wrap.contains(event.target)) close(); };
+  const choose = system => {
+    selectedSystem[side] = system;
+    button.textContent = system;
+    list.querySelectorAll("li").forEach(item => {
+      item.setAttribute("aria-selected", String(item.dataset.system === system));
+    });
+    close();
     refreshProfileForSelectedSystems();
+  };
+
+  options.forEach(option => {
+    const pct = Math.max(0, Math.min(100, Math.round(Number(option.score) || 0)));
+    const item = document.createElement("li");
+    item.setAttribute("role", "option");
+    item.tabIndex = -1;
+    item.dataset.system = option.system;
+    item.setAttribute("aria-selected", String(option.system === selectedSystem[side]));
+    const name = document.createElement("span");
+    name.className = "system-option-name";
+    name.textContent = option.system;
+    const fit = document.createElement("span");
+    fit.className = "system-option-fit";
+    fit.style.setProperty("--fit-color", fitColor(pct));
+    fit.textContent = `----- ${pct}% best fit`;
+    item.append(name, fit);
+    item.addEventListener("click", () => choose(option.system));
+    item.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); choose(option.system); }
+      else if (event.key === "ArrowDown") { event.preventDefault(); (item.nextElementSibling || item).focus(); }
+      else if (event.key === "ArrowUp") { event.preventDefault(); (item.previousElementSibling || item).focus(); }
+      else if (event.key === "Escape") { close(); button.focus(); }
+    });
+    list.append(item);
   });
-  row.append(labelEl, select);
+
+  if (options.length) {
+    button.textContent = selectedSystem[side] || options[0].system;
+    button.addEventListener("click", () => {
+      if (!list.hidden) { close(); return; }
+      list.hidden = false;
+      button.setAttribute("aria-expanded", "true");
+      document.addEventListener("mousedown", onOutside, true);
+      (list.querySelector('[aria-selected="true"]') || list.firstElementChild)?.focus();
+    });
+    button.addEventListener("keydown", event => {
+      if (event.key === "ArrowDown" && list.hidden) { event.preventDefault(); button.click(); }
+    });
+  } else {
+    button.disabled = true;
+    button.textContent = "Not available";
+  }
+  wrap.append(button, list);
+  row.append(labelEl, wrap);
   container.append(row);
+}
+
+function fitColor(pct) {
+  const stops = [[0, [220, 38, 38]], [50, [249, 115, 22]], [75, [234, 179, 8]], [100, [34, 197, 94]]];
+  const p = Math.max(0, Math.min(100, pct));
+  for (let i = 1; i < stops.length; i++) {
+    if (p <= stops[i][0]) {
+      const [p0, c0] = stops[i - 1];
+      const [p1, c1] = stops[i];
+      const t = (p - p0) / (p1 - p0);
+      return `rgb(${c0.map((v, k) => Math.round(v + (c1[k] - v) * t)).join(",")})`;
+    }
+  }
+  return "rgb(34,197,94)";
 }
 
 function renderUsagePanel(usage, preserveSelection = false) {
