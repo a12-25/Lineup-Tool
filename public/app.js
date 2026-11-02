@@ -1168,7 +1168,7 @@ function renderUsageSystemRow(container, side, label, width) {
   };
 
   options.forEach(option => {
-    const pct = Math.max(0, Math.min(100, Math.round(Number(option.score) || 0)));
+    const pct = systemFitPercent(options, option);
     const item = document.createElement("li");
     item.setAttribute("role", "option");
     item.tabIndex = -1;
@@ -1179,8 +1179,12 @@ function renderUsageSystemRow(container, side, label, width) {
     name.textContent = option.system;
     const fit = document.createElement("span");
     fit.className = "system-option-fit";
-    fit.style.setProperty("--fit-color", fitColor(pct));
-    fit.textContent = `----- ${pct}% best fit`;
+    fit.style.setProperty("--fit-color", overviewRatingStyle("synergy", pct).color);
+    const bar = document.createElement("span");
+    bar.className = "system-option-bar";
+    const text = document.createElement("span");
+    text.textContent = `${pct}% best fit`;
+    fit.append(bar, text);
     item.append(name, fit);
     item.addEventListener("click", () => choose(option.system));
     item.addEventListener("keydown", event => {
@@ -1213,18 +1217,14 @@ function renderUsageSystemRow(container, side, label, width) {
   container.append(row);
 }
 
-function fitColor(pct) {
-  const stops = [[0, [220, 38, 38]], [50, [249, 115, 22]], [75, [234, 179, 8]], [100, [34, 197, 94]]];
-  const p = Math.max(0, Math.min(100, pct));
-  for (let i = 1; i < stops.length; i++) {
-    if (p <= stops[i][0]) {
-      const [p0, c0] = stops[i - 1];
-      const [p1, c1] = stops[i];
-      const t = (p - p0) / (p1 - p0);
-      return `rgb(${c0.map((v, k) => Math.round(v + (c1[k] - v) * t)).join(",")})`;
-    }
-  }
-  return "rgb(34,197,94)";
+// The top system sits at 90-99%; other systems drop off by their raw score gap,
+// so versatile lineups show tightly packed fits and narrow ones show steep drops.
+function systemFitPercent(options, option) {
+  const scores = options.map(item => Number(item.score) || 0);
+  const top = Math.max(...scores);
+  const topPct = Math.max(90, Math.min(99, 90 + (top - 60) * 0.25));
+  const pct = topPct - (top - (Number(option.score) || 0)) * 2.2;
+  return Math.max(1, Math.min(99, Math.round(pct)));
 }
 
 function renderUsagePanel(usage, preserveSelection = false) {

@@ -529,8 +529,7 @@ body {
   margin: 0;
   padding: 4px;
   list-style: none;
-  border: 1px solid var(--primary-color);
-  border-radius: 6px;
+  border: 1px solid var(--line);
   background: var(--page);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
@@ -538,40 +537,42 @@ body {
 .system-dropdown-list li {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 1px;
+  align-items: stretch;
+  gap: 2px;
   padding: 6px 8px;
   border-radius: 4px;
-  text-align: left;
+  text-align: right;
   cursor: pointer;
   white-space: nowrap;
 }
 
-.system-dropdown-list li:hover,
-.system-dropdown-list li:focus,
-.system-dropdown-list li[aria-selected="true"] {
+.system-dropdown-list li:focus {
   outline: none;
-  background: var(--primary-color);
-  color: #ffffff;
 }
 
 .system-option-name {
-  font-weight: 600;
+  font-weight: 500;
+}
+
+.system-dropdown-list li:hover .system-option-name,
+.system-dropdown-list li:focus .system-option-name {
+  font-weight: 800;
 }
 
 .system-option-fit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--fit-color);
 }
 
-.system-dropdown-list li:hover .system-option-fit,
-.system-dropdown-list li:focus .system-option-fit,
-.system-dropdown-list li[aria-selected="true"] .system-option-fit {
-  background: rgba(255, 255, 255, 0.92);
-  padding: 0 4px;
-  border-radius: 3px;
-  filter: brightness(0.85);
+.system-option-bar {
+  flex: 1 1 auto;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--fit-color);
 }
 
 .metric-row-select .usage-system-select:disabled {
