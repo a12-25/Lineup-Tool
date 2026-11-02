@@ -1,60 +1,83 @@
-# Lineup Tool Migration
+# NBA Lineup Tool
 
-This folder contains the web migration of the Google Sheets / Apps Script lineup tool. GitHub Pages serves a selector-only real-player roster. The existing spreadsheet can provide calculations through a read-only Apps Script JSONP endpoint; an Azure Functions/Blob backend is an optional alternative.
+> Authors: [a12-25](https://github.com/a12-25)
 
-## What is included
+## Project Description
 
-- A modular JavaScript architecture under `src/`
-- A browser frontend under `public/` with a selector-only roster containing real player names, positions, and eligible slots; statistical results remain behind the API
-- A read-only Apps Script JSONP endpoint that runs the spreadsheet's exact calculations and returns only lineup outputs/profile values
-- A CSV converter that writes full rows to ignored `private/players.json` and selector-only fields to `public/data/roster.json`
-- Separate GitHub Pages and Azure Functions deployment workflows
+Basketball coaches, analysts, and fans constantly ask the same question: *how good would these five players be together?* A list of individual stats cannot answer it, because lineups win or lose on **fit** (spacing, creation, rebounding, and defensive coverage), not on talent alone. We wanted a tool that lets a user pick any five NBA players and immediately see how that lineup would perform, how it should be run, and what each player would be asked to do.
 
-## Data handling
+- **Why it is interesting:** the tool treats a lineup as a system rather than a sum of parts. It rewards complementary roles, penalizes wasted strengths and spacing problems, and shows how the result changes if the team runs a different offensive or defensive scheme.
+- **Languages and tools:** JavaScript (browser frontend and Node modules), Google Apps Script (spreadsheet calculation engine), HTML/CSS, Python (CSV conversion), GitHub Actions (deployment), and Azure Functions (optional backend).
+- **Input:** five selected players, one for each of the five lineup slots (PG, SG, SF, PF, C).
+- **Output:** projected ratings for the lineup, an optimal-usage report with switchable system options, a per-player performance table, a simulated net-rating curve, and a detailed profile and 3D shape graph for any selected player.
+- **Features:**
+  - Searchable player selectors for the full roster, filtered by eligible slot.
+  - Projected **OFF, DEF, and NET** ratings (points per 100 possessions) plus four overview ratings: creation balance, synergy, pace, and versatility.
+  - Offensive and defensive projections: shot balance, offensive rebounding, 3P%, TS%, opponent TS%, defensive rebounding, turnover creation, and rim protection.
+  - **Optimal usage**: the best offensive system, initiator, defensive system, and rebounding schemes. The Offense and Defense rows are dropdowns of ranked system options, and picking one updates each player's OFF and DEF role in their bio.
+  - **Player Performance** table with OFF, DEF, LOAD, and FIT for every player.
+  - **Net Rating Over Time**: a 24-minute stint simulation with hover, drag, and pin interactions.
+  - **Player profiles** with bio (position, roles, age, contract value), offensive and defensive load, expected shot profile, expected efficiency, expected defense, and expected impact to the lineup. A birthday message appears when it is the player's birthday today.
+  - **Player Spotlight**: replaces the lineup view with an individual net-rating-contribution graph and two rotatable 3D radar graphs (10 offensive and 8 defensive attributes). Spotlight updates when another player is selected.
+  - Light and dark themes, team color customization, a pause/resume button for graph animations, and a mobile layout with an off-canvas profile drawer.
+  - Manual player overrides for cases where the data does not reflect a player's real value.
 
-1. Keep the source CSV out of the public repository.
-2. Run `python scripts/convert_csv_to_json.py` from `converted/`. This creates ignored `private/players.json` and a public selector-only `public/data/roster.json`.
-3. Copy [apps-script/ProjectionApi.gs](apps-script/ProjectionApi.gs) into the existing spreadsheet's Apps Script project. Also update the existing private helper files `Processing.gs`, `PROFILE_Bio.gs`, `PROFILE_Shot_Profile.gs`, `PROFILE_Efficiency.gs`, `PROFILE_Expected_Defense.gs`, `PROFILE_Impact.gs`, and `LINEUP_Player_Performance.gs` from the matching workspace sources to enable request-scoped sheet snapshot reuse. Deploy as a web app that runs as the spreadsheet owner and is accessible to anyone. Its `doGet` JSONP route accepts five selected names and returns calculated projections plus sanitized profile data for those five players, allowing profile selection in the browser without recalculating the lineup; it never returns raw player records or writes to spreadsheet cells.
-4. Copy the deployed web app's `/exec` URL into the `spreadsheet-projection-url` meta tag in `public/index.html`, commit, and push. This URL is public configuration, not a secret. JSONP lets the static GitHub Pages frontend call Apps Script without a CORS preflight.
+## Modeling Features
 
-The generated `public/data/roster.json` intentionally contains only names, listed positions, and eligible lineup slots so Pages can populate all player selectors without publishing stats. Keep it in sync with the spreadsheet's Players sheet. Never add the source CSV, `private/players.json`, or any full-stat dataset to Git or `public/`.
+The project does not use a trained machine-learning model. It is a transparent, rule-based statistical model whose weights were tuned by hand against the spreadsheet's calibration data. The main techniques are:
 
-## Optional Azure Backend
+- **Percentile and z-score normalization.** Raw per-100-possession stats (shooting, creation, rebounding, defensive impact) are converted into percentile-based 0-99 ratings so unlike stats can be compared and combined.
+- **Weighted linear blends.** Offensive and defensive ratings, load scores, and the player shape attributes are weighted averages of normalized inputs, with each weight chosen to reflect how much that input drives winning.
+- **Diminishing-returns aggregation.** Lineup totals sort each category from best to worst and give later contributors less weight, so stacking five players with the same strength is worth less than covering different needs.
+- **Calibration and regression to the mean.** Raw lineup projections are mapped onto a realistic points-per-100 scale. Extreme offenses and defenses are pulled back toward the league average, reflecting that very good or very bad five-man units regress over a full sample of minutes.
+- **Assignment search (combinatorial optimization).** The system-fit engine scores all **120 player-to-role permutations** for each of **17 offensive and 14 defensive system templates**, then ranks the systems. Each assignment is scored with a fit function that rewards complementary responsibilities and useful roles for all five players, and subtracts penalties for weak fits, wasted strengths, spacing problems, and excessive creation burden. The top three alternatives are returned with their player assignments.
+- **Rule-based role classification.** Player bio roles (for example Secondary Handler or Helpside Defender) and load profiles come from threshold and score comparisons across each player's skills.
+- **Time-series stint simulation.** Net Rating Over Time is a deterministic simulation of a 24-minute stint. It models fatigue curves, role-based "second wind," load redistribution when players tire, usage-hierarchy conflicts, and momentum events, using Gaussian bumps, smooth-step and sigmoid shaping functions, and a stable hash in place of random numbers so the same lineup always produces the same curve. A second pass runs the model per player to produce the individual net-rating-contribution graph.
+- **Expected-value profiles.** Expected shot profile, efficiency, and defense are projections of what a player is likely to produce in the specific lineup context, not just their past averages.
+- **Manual overrides.** `PLAYER_Overrides.gs` holds hand-set OFF, DEF, and position values for players whose stats misrepresent them. An override replaces the calculated score and flows through the player performance table, expected-defense profile, shape graphs, and lineup fit.
 
-The current implementation also supports Azure Functions with private Blob Storage. That route requires an Azure subscription, a private storage container, managed identity with Blob Reader access, and the Function App settings `PLAYER_DATA_BLOB_URL`, `SPREADSHEET_PROJECTION_URL`, and `SPREADSHEET_PROJECTION_KEY`. Keep the `doPost` shared key only in Script Properties and Azure app settings. Configure `lineup-api-base-url` with the Function URL and add GitHub's `AZURE_FUNCTIONAPP_NAME` variable and `AZURE_FUNCTIONAPP_PUBLISH_PROFILE` secret. The Azure API deployment workflow skips deploy when those settings are absent.
+## Architecture
 
-## GitHub Pages Deploy
+The project has two halves, kept separate so the full stat dataset is never published.
 
-In repository Settings > Pages, use **GitHub Actions** as the build and deployment source. This one-time setup is required before `actions/configure-pages` can find the Pages site. The Pages workflow publishes only `public/`.
+- **Frontend (`public/`):** a static site on GitHub Pages. `app.js` runs the interface and animations, `shape-radar.js` draws the 3D radar graphs, and `styles.css` holds the themes. The page only holds a selector-only roster (names, positions, eligible slots).
+- **Calculation engine (Google Apps Script):** the original spreadsheet logic (`LINEUP_*.gs`, `PROFILE_*.gs`, `PLAYER_*.gs`, `GRAPH_*.gs`) runs behind a read-only JSONP endpoint, `apps-script/ProjectionApi.gs`. It returns only lineup calculations and sanitized profile data, never raw player records.
+- **Shared modules (`src/`):** JavaScript engines for load normalization, role assignment, expected defense, expected impact, and lineup analysis, with the API service and spreadsheet client. These back the optional Azure Functions API.
+- **Optional Azure backend:** Azure Functions with private Blob Storage as an alternative to the Apps Script endpoint.
 
-The Azure API workflow always runs its tests. It deploys only when both `AZURE_FUNCTIONAPP_NAME` and `AZURE_FUNCTIONAPP_PUBLISH_PROFILE` are configured; otherwise it succeeds with an explicit deployment-skipped summary.
+```
+Browser (GitHub Pages)  --JSONP-->  Apps Script Web App  -->  Players sheet + .gs engines
+```
 
-### Early test release
+## User Interface Specification
 
-The live roster selector is available at `https://a12-25.github.io/Lineup-Tool/`. It lists all real players. Submit remains disabled until either the Apps Script `/exec` URL or Azure Function URL is configured. The repository is `https://github.com/a12-25/Lineup-Tool.git`, and only the `converted/` contents are published. The demo at `?demo=1` uses fictional players and mock calculations.
+1. **Lineup form:** choose one player for each of the five slots, then submit.
+2. **Results (left column):** rating projections, lineup overview, offensive and defensive projections, optimal usage, player performance, and the net-rating chart.
+3. **Optimal usage dropdowns:** change the Offense or Defense system to see how the selected player's roles change.
+4. **Player profile (right column):** choose a lineup player to open their profile. On mobile this is a drawer opened from the fixed Player Profile button.
+5. **Open Player Spotlight:** replaces the lineup view with that player's net-rating contribution graph and shape radars. Use **Close Spotlight** to return to the lineup.
+6. **Demo mode:** adding `?demo=1` to the URL uses fictional players and mock results, with no backend needed.
 
-## Local development
+## Installation / Usage
 
-For the Apps Script path, set the `/exec` URL in the frontend meta tag and serve `public/` with any static web server. For local Azure Functions development, install Node.js 20+, Azure Functions Core Tools v4, and Azurite; install dependencies with `npm install`, convert the CSV to ignored private JSON, copy `local.settings.example.json` to `local.settings.json`, configure server-side settings, and start the API with `npm start`. Run `npm test` and `npm run check` for validation. Never commit `local.settings.json`.
+1. Clone the repository: `git clone https://github.com/a12-25/Lineup-Tool.git`
+2. Keep the source player CSV out of the public repository. From the project root, run `python scripts/convert_csv_to_json.py`. This writes ignored `private/players.json` and the selector-only `public/data/roster.json`.
+3. In the spreadsheet's Apps Script project, add `apps-script/ProjectionApi.gs` along with the `.gs` engine files. Deploy as a web app that runs as the spreadsheet owner and is accessible to anyone. Deploy a **new version** whenever a `.gs` file changes.
+4. Copy the deployed `/exec` URL into the `spreadsheet-projection-url` meta tag in `public/index.html`. This URL is public configuration, not a secret.
+5. Serve `public/` with any static web server, or open `public/index.html?demo=1` directly for the demo.
+6. For GitHub Pages, set **Settings > Pages > Source** to **GitHub Actions**. The workflow publishes only `public/`.
+7. Optional Azure backend: install Node.js 20+, Azure Functions Core Tools v4, and Azurite, run `npm install`, copy `local.settings.example.json` to `local.settings.json`, and run `npm start`. The deploy workflow only publishes when `AZURE_FUNCTIONAPP_NAME` and `AZURE_FUNCTIONAPP_PUBLISH_PROFILE` are configured.
 
-### Manual frontend preview
+The live site is at <https://a12-25.github.io/Lineup-Tool/>.
 
-Open `public/index.html` directly in a browser and add `?demo=1` to its URL. This uses clearly labeled fictional players and mock results to test the selectors and result rendering without Node.js, Azure, or the private dataset. It does not test API integration or real calculations.
+## Testing
 
-The dashboard follows the lineup sheet: projection and performance sections occupy the main column, while a player selector and seven collapsible profile sections stay in a compact side panel. On mobile, the profile is an off-canvas drawer opened by the fixed Player Profile button and dismissed by Close, the backdrop, or Escape. The profile selector is limited to the five submitted lineup players.
+- Run `npm test` for the unit tests and `npm run check` for syntax validation.
+- The Azure workflow always runs the tests, even when it skips deployment.
+- Frontend behavior can be previewed without any backend using `?demo=1`. This tests the selectors, animations, and rendering, but not the real calculations.
 
-Net Rating Over Time uses the same pure 24-minute stint simulation as `GRAPH_Calculations.gs`, with 25 points for minutes 0 through 24. Positive and negative portions have separately themed line and area colors. Hover or drag along the line for a temporary signed value; select a minute point to pin it until the chart background is clicked or tapped.
+## Privacy Limits
 
-The API preserves the spreadsheet's groups: overview ratings; offensive projections (shot balance, offensive rebounding, OFF rating, 3P%, TS%); defensive projections (opponent TS%, defensive rebounding, DEF rating, turnover creation, rim protection); five optimal-usage outputs; player performance (OFF, DEF, LOAD, FIT); and the selected player's bio, offensive/defensive load, shot profile, efficiency, expected defense, and expected impact. Percentage values are normalized to fractions in JSON and rendered as percentages in the browser.
-
-The optimal-usage block is produced by the spreadsheet's "system-fit v2" engine (`LINEUP_Usage.gs` / `apps-script/ProjectionApi.gs`), which searches all 120 player-to-job permutations across 17 offensive and 14 defensive system templates. In addition to the top-ranked `usage.offense` / `usage.defense` strings, the response includes `usage.offenseOptions` / `usage.defenseOptions` — the full ranked list of candidate systems, each with a fit score and a per-player job assignment (`{ player, job, jobLabel, fit }`). The browser UI renders these as dropdowns next to the Offense/Defense rows; picking a different system there immediately updates the selected player's profile panel ("System Fit" section) with that system's role and fit for them, entirely client-side (no extra network round-trip). If an older Apps Script deployment or a degraded Azure/spreadsheet bridge response omits `offenseOptions`/`defenseOptions`, the UI falls back to the plain top-ranked system text as before.
-
-Remember to re-copy the updated `LINEUP_Usage.gs` and `apps-script/ProjectionApi.gs` into the live Google Apps Script project (see below) for these fields to appear in production.
-
-## Privacy limits
-
-- The API never returns the complete `raw` records; its roster endpoint returns names and positions, and its lineup endpoint returns calculations plus sanitized profiles for the five selected players. OFF, DEF, NET, and the four Lineup Overview ratings come from the spreadsheet's projection formulas, not averages of individual DPM values.
-- The Apps Script JSONP `doGet` route is public so GitHub Pages can call it without a browser-held secret. It returns only requested lineup calculations/profile data, but users can make repeated lineup requests and observe returned values; Apps Script quotas and execution latency apply.
-- The initial lineup response includes profile values for each of its five selected players so the profile selector can switch instantly. Because the API is public, users can make repeated lineup requests and observe returned values. This architecture prevents a one-request download of the complete source file; it does not make displayed player stats secret. Require authenticated access or omit those fields if that stronger restriction is necessary.
-- The GitHub Pages frontend and public source code must not contain the player CSV, generated dataset, storage credentials, or Function publish profile.
-- The original `.gs` spreadsheet files remain the business-logic reference and should not be added to a public repo unless intended.
+- The API never returns complete raw player records, only calculations and sanitized profiles for the five selected players.
+- The Apps Script JSONP route is public so GitHub Pages can call it without a secret in the browser. Apps Script quotas and latency apply.
+- Never commit the source CSV, `private/players.json`, `local.settings.json`, or any storage credentials or publish profiles.
