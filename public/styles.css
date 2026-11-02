@@ -155,7 +155,7 @@ body {
 
 .positionless-control {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   gap: 12px;
   min-height: 38px;
