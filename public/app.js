@@ -1782,6 +1782,19 @@ function renderShapeAttributes(column, attributes, swap = false) {
   });
 }
 
+const SHAPE_DEFENSE_BONUS = { jarredvanderbilt: 17 };
+const SHAPE_RATING_SETS = { offense: { jarredvanderbilt: { Rebounding: 83 } } };
+
+function adjustOffenseShapeRating(playerName, attribute) {
+  const set = SHAPE_RATING_SETS.offense[normalizePlayerIdLookup(playerName)];
+  return set && set[attribute.name] !== undefined ? set[attribute.name] : attribute.rating;
+}
+
+function adjustDefenseShapeRating(playerName, rating) {
+  const bonus = SHAPE_DEFENSE_BONUS[normalizePlayerIdLookup(playerName)] || 0;
+  return bonus ? Math.min(99, rating + bonus) : rating;
+}
+
 function renderShapes(playerName, swap = false) {
   const shape = currentPlayerShapes.get(normalizePlayerName(playerName));
   spotlightShapes.hidden = !shape;
@@ -1790,7 +1803,7 @@ function renderShapes(playerName, swap = false) {
   shapeColumns.forEach(column => {
     const attributes = shape[column.side].map((attribute, index) => ({
       name: attribute.name,
-      rating: attribute.rating,
+      rating: column.side === "defense" ? adjustDefenseShapeRating(playerName, attribute.rating) : adjustOffenseShapeRating(playerName, attribute),
       color: palette[index % palette.length]
     }));
     column.canvas.setAttribute(
