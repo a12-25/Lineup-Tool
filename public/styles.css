@@ -572,7 +572,28 @@ body {
 
 .system-dropdown-list li:hover .system-option-name,
 .system-dropdown-list li:focus .system-option-name {
+  color: var(--secondary-color);
+}
+
+.system-dropdown-list li[aria-selected="true"] .system-option-name {
   color: var(--primary-color);
+}
+
+.system-dropdown-list .system-option-text,
+.system-dropdown-list .system-option-text .system-option-num {
+  display: inline;
+  white-space: nowrap;
+  color: var(--fit-color);
+  font-size: inherit;
+}
+
+.system-dropdown-list .system-option-fit {
+  color: var(--fit-color);
+  font-size: 0.78rem;
+}
+
+.system-dropdown-list .system-option-name {
+  font-size: 0.95rem;
 }
 
 .system-option-fit {
