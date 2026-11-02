@@ -262,6 +262,13 @@ function calculatePrivateLineupProjections_(playerNames, selectedProfileName) {
     overview
   });
 
+  const naturalScores = projectionApiNaturalScores_(
+    preparedLineup,
+    sharedAnalysis,
+    defensiveRoles,
+    calibration
+  );
+
   return {
     players: preparedLineup.map(player => {
       const key = keyFor(player);
@@ -328,13 +335,9 @@ function calculatePrivateLineupProjections_(playerNames, selectedProfileName) {
     playerShapes: projectionApiPlayerShapes_(
       playerSheetValues,
       lineup,
-      projectionApiNaturalScores_(
-        preparedLineup,
-        sharedAnalysis,
-        defensiveRoles,
-        calibration
-      )
+      naturalScores
     ),
+    overrideDeltas: projectionApiOverrideDeltas_(preparedLineup, naturalScores),
     ratingProjections: {
       OFF: offensiveProjection.offensiveRating,
       DEF: defensiveProjection.defensiveRating,
@@ -395,6 +398,20 @@ function projectionApiNaturalScores_(preparedLineup, sharedAnalysis, defensiveRo
     return {};
   }
   return scores;
+}
+
+function projectionApiOverrideDeltas_(preparedLineup, naturalScores) {
+  return preparedLineup.map(player => {
+    const natural = naturalScores[normalizeBioPlayerName_(player.player)];
+    if (!natural) return null;
+    const offOverride = playerOverrideRating_(player, "off");
+    const defOverride = playerOverrideRating_(player, "def");
+    return {
+      player: player.player,
+      off: offOverride === null ? 0 : offOverride - natural.off,
+      def: defOverride === null ? 0 : defOverride - natural.def
+    };
+  }).filter(Boolean);
 }
 
 function projectionApiPlayerShapes_(playerSheetValues, lineup, naturalScores) {

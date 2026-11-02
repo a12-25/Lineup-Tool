@@ -1537,7 +1537,69 @@ function renderLineupSections(data, preserveSystems = false) {
   renderNetRatingChart(data.netRatingOverTime, true);
 }
 
+const IMPACT_PER_OVERRIDE_POINT = 0.08;
+const SHAPE_IMPACT_WEIGHTS = {
+  offense: { "Perimeter Shooting": 0.05, "Free Throws": 0.02, default: 0.03 },
+  defense: { "Perimeter Defense": 0.045, "Interior Defense": 0.045, default: 0.035 }
+};
+
+function playerManualImpact(entry, deltaEntry) {
+  let off = 0;
+  let def = 0;
+  if (deltaEntry) {
+    off += deltaEntry.off * IMPACT_PER_OVERRIDE_POINT;
+    def += deltaEntry.def * IMPACT_PER_OVERRIDE_POINT;
+  }
+  if (entry) {
+    ["offense", "defense"].forEach(side => {
+      const weights = SHAPE_IMPACT_WEIGHTS[side];
+      (entry[side] || []).forEach(attribute => {
+        if (!Number.isFinite(attribute.rating)) return;
+        const change = adjustShapeRating(entry.player, side, attribute) - attribute.rating;
+        const amount = change * (weights[attribute.name] ?? weights.default);
+        if (side === "offense") off += amount; else def += amount;
+      });
+    });
+  }
+  return { off, def };
+}
+
+function applyManualImpact(data) {
+  if (!data || data.manualImpactApplied) return data;
+  const shapes = new Map((data.playerShapes || []).map(entry => [normalizePlayerName(entry.player), entry]));
+  const deltas = new Map((data.overrideDeltas || []).map(entry => [normalizePlayerName(entry.player), entry]));
+  const impacts = new Map();
+  let off = 0;
+  let def = 0;
+  (data.players || []).forEach(player => {
+    const key = normalizePlayerName(player.player);
+    const impact = playerManualImpact(shapes.get(key), deltas.get(key));
+    impacts.set(key, impact.off + impact.def);
+    off += impact.off;
+    def += impact.def;
+  });
+  data.manualImpactApplied = true;
+  if (!off && !def) return data;
+  const ratings = data.ratingProjections;
+  if (ratings && Number.isFinite(ratings.OFF) && Number.isFinite(ratings.DEF)) {
+    ratings.OFF += off;
+    ratings.DEF -= def;
+    ratings.NET = ratings.OFF - ratings.DEF;
+  }
+  const lineupShift = off + def;
+  data.netRatingOverTime = (data.netRatingOverTime || []).map(point => ({
+    ...point,
+    netRating: point.netRating + lineupShift
+  }));
+  data.playerNetRatingOverTime = (data.playerNetRatingOverTime || []).map(entry => {
+    const shift = impacts.get(normalizePlayerName(entry.player)) || 0;
+    return { ...entry, series: entry.series.map(point => ({ ...point, netRating: point.netRating + shift })) };
+  });
+  return data;
+}
+
 function renderResults(data, selectedNames) {
+  applyManualImpact(data);
   lastLineupData = data;
   currentPlayerShapes = new Map((data.playerShapes || []).map(entry => [
     normalizePlayerName(entry.player),
