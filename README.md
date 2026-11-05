@@ -37,6 +37,12 @@ The project does not use a trained machine-learning model. It is a transparent, 
 - **Expected-value profiles.** Expected shot profile, efficiency, and defense are projections of what a player is likely to produce in the specific lineup context, not just their past averages.
 - **Manual overrides.** `PLAYER_Overrides.gs` holds hand-set OFF, DEF, and position values for players whose stats misrepresent them. An override replaces the calculated score and flows through the player performance table, expected-defense profile, shape graphs, and lineup fit.
 
+## Limitations
+
+- **Accuracy:** The model uses 2025-26 NBA lineups as a reference and has correctly projected some current lineups for the 2026-27 NBA season, but accuracy is not guaranteed.
+- **Interpretation:** Lineup ratings represent an average-case projection over at least 200 simulated minutes. Real-world lineups may differ in direction and magnitude before a reasonable runtime is reached. Player ratings combine talent and projection and should not be read as precise league percentiles or as directly comparable to NBA 2K ratings.
+- **Data coverage:** The tool includes 492 NBA players who played in the 2025-26 NBA season, or in 2024-25 if an injury or other circumstance sidelined them in 2025-26. The 2026 rookie class is not included due to data limitations.
+
 ## Architecture
 
 The project has two halves, kept separate so the full stat dataset is never published.
