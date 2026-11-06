@@ -1,27 +1,28 @@
 # NBA Lineup Tool
 
-> Authors: [a12-25](https://github.com/a12-25)
+> Author: [a12-25](https://github.com/a12-25)
 
 ## Project Description
 
-Basketball coaches, analysts, and fans constantly ask the same question: *how good would these five players be together?* A list of individual stats cannot answer it, because lineups win or lose on **fit** (spacing, creation, rebounding, and defensive coverage), not on talent alone. We wanted a tool that lets a user pick any five NBA players and immediately see how that lineup would perform, how it should be run, and what each player would be asked to do.
 
-- **Why it is interesting:** the tool treats a lineup as a system rather than a sum of parts. It rewards complementary roles, penalizes wasted strengths and spacing problems, and shows how the result changes if the team runs a different offensive or defensive scheme.
+
+- **At a glance:** the tool treats a lineup as a system rather than a sum of parts. It rewards complementary roles, penalizes wasted strengths and spacing problems, and shows how the result changes if the team runs a different offensive or defensive scheme.
 - **Languages and tools:** JavaScript (browser frontend and Node modules), Google Apps Script (spreadsheet calculation engine), HTML/CSS, Python (CSV conversion), GitHub Actions (deployment), and Azure Functions (optional backend).
 - **Input:** five selected players, one for each of the five lineup slots (PG, SG, SF, PF, C).
 - **Output:** projected ratings for the lineup, an optimal-usage report with switchable system options, a per-player performance table, a simulated net-rating curve, and a detailed profile and 3D shape graph for any selected player.
 - **Features:**
   - Searchable player selectors for the full roster, filtered by eligible slot.
-  - Optional **Positionless** mode makes every player available in all five lineup selectors; the preference is saved in the browser.
-  - Projected **OFF, DEF, and NET** ratings (points per 100 possessions) plus four overview ratings: creation balance, synergy, pace, and versatility.
-  - Offensive and defensive projections: shot balance, offensive rebounding, 3P%, TS%, opponent TS%, defensive rebounding, turnover creation, and rim protection.
-  - **Optimal usage**: the best offensive system, initiator, defensive system, and rebounding schemes. The Offense and Defense rows are dropdowns of ranked system options, and picking one updates each player's OFF and DEF role in their bio.
-  - **Player Performance** table with OFF, DEF, LOAD, and FIT for every player.
-  - **Net Rating Over Time**: a 24-minute stint simulation with hover, drag, and pin interactions.
-  - **Player profiles** with bio (position, roles, age, contract value), offensive and defensive load, expected shot profile, expected efficiency, expected defense, and expected impact to the lineup. A birthday message appears when it is the player's birthday today.
-  - **Player Spotlight**: replaces the lineup view with an individual net-rating-contribution graph and two rotatable 3D radar graphs (10 offensive and 8 defensive attributes). Spotlight updates when another player is selected.
+  - Optional **Positionless** mode makes every player available in all five lineup selectors.
+  - Projected **OFF, DEF, and NET** ratings (points per 100 possessions) plus four overview ratings.
+  - 8 distinct lineup offensive and defensive projections.
+  - **Optimal usage**: the ideal offensive systems, initiator, defensive systems, and rebounding schemes. The Offense and Defense rows are dropdowns of ranked system options, and picking one updates each player's OFF and DEF role in their bio.
+  - **Player Performance** table with general attributes for every player.
+  - **Net Rating Over Time**: a 24-minute deterministic stint simulation.
+  - **Player profiles** with bio, offensive and defensive load, expected shot profile, expected efficiency, expected defense, and expected impact to the lineup.
+  - **Player Spotlight**: replaces the lineup view with an individual net-rating-contribution graph and a deeper statistical evaluation of the player himself. Spotlight updates when another player is selected.
   - Light and dark themes, team color customization, a pause/resume button for graph animations, and a mobile layout with an off-canvas profile drawer.
-  - Manual player overrides for cases where the data does not reflect a player's real value.
+  - All attributes are calculated with heavy involvement of publicly available statistics.
+  - User preferences are saved in the browser.
 
 ## Modeling Features
 
@@ -35,7 +36,6 @@ The project does not use a trained machine-learning model. It is a transparent, 
 - **Rule-based role classification.** Player bio roles (for example Secondary Handler or Helpside Defender) and load profiles come from threshold and score comparisons across each player's skills.
 - **Time-series stint simulation.** Net Rating Over Time is a deterministic simulation of a 24-minute stint. It models fatigue curves, role-based "second wind," load redistribution when players tire, usage-hierarchy conflicts, and momentum events, using Gaussian bumps, smooth-step and sigmoid shaping functions, and a stable hash in place of random numbers so the same lineup always produces the same curve. A second pass runs the model per player to produce the individual net-rating-contribution graph.
 - **Expected-value profiles.** Expected shot profile, efficiency, and defense are projections of what a player is likely to produce in the specific lineup context, not just their past averages.
-- **Manual overrides.** `PLAYER_Overrides.gs` holds hand-set OFF, DEF, and position values for players whose stats misrepresent them. An override replaces the calculated score and flows through the player performance table, expected-defense profile, shape graphs, and lineup fit.
 
 ## Limitations
 
@@ -67,21 +67,7 @@ Browser (GitHub Pages)  --JSONP-->  Apps Script Web App  -->  Players sheet + .g
 
 ## Installation / Usage
 
-1. Clone the repository: `git clone https://github.com/a12-25/Lineup-Tool.git`
-2. Keep the source player CSV out of the public repository. From the project root, run `python scripts/convert_csv_to_json.py`. This writes ignored `private/players.json` and the selector-only `public/data/roster.json`.
-3. In the spreadsheet's Apps Script project, add `apps-script/ProjectionApi.gs` along with the `.gs` engine files. Deploy as a web app that runs as the spreadsheet owner and is accessible to anyone. Deploy a **new version** whenever a `.gs` file changes.
-4. Copy the deployed `/exec` URL into the `spreadsheet-projection-url` meta tag in `public/index.html`. This URL is public configuration, not a secret.
-5. Serve `public/` with any static web server, or open `public/index.html?demo=1` directly for the demo.
-6. For GitHub Pages, set **Settings > Pages > Source** to **GitHub Actions**. The workflow publishes only `public/`.
-7. Optional Azure backend: install Node.js 20+, Azure Functions Core Tools v4, and Azurite, run `npm install`, copy `local.settings.example.json` to `local.settings.json`, and run `npm start`. The deploy workflow only publishes when `AZURE_FUNCTIONAPP_NAME` and `AZURE_FUNCTIONAPP_PUBLISH_PROFILE` are configured.
-
 The live site is at <https://a12-25.github.io/Lineup-Tool/>.
-
-## Testing
-
-- Run `npm test` for the unit tests and `npm run check` for syntax validation.
-- The Azure workflow always runs the tests, even when it skips deployment.
-- Frontend behavior can be previewed without any backend using `?demo=1`. This tests the selectors, animations, and rendering, but not the real calculations.
 
 ## Privacy Limits
 
