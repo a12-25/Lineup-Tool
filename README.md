@@ -4,9 +4,9 @@
 
 ## Project Description
 
+In contemporary basketball analysis, it is incredibly easy for people to misjudge teams by virtue of evaluating their cumulative talent laid out on paper. Common misconceptions often come from interpreting isolated skill redundancies as indication of what is objectively "better". Projection tools offer grounded proofs and disputes of this sentiment, as well as other obvious flaws. But not many exist that thoroughly explain the reason behind their projective results.
 
-
-- **At a glance:** the tool treats a lineup as a system rather than a sum of parts. It rewards complementary roles, penalizes wasted strengths and spacing problems, and shows how the result changes if the team runs a different offensive or defensive scheme.
+- **At a glance:** this tool treats a 5-man NBA lineup as a system rather than a sum of parts. It rewards complementary roles, penalizes wasted strengths and spacing problems, and shows how the result changes if the team runs a different offensive or defensive scheme.
 - **Languages and tools:** JavaScript (browser frontend and Node modules), Google Apps Script (spreadsheet calculation engine), HTML/CSS, Python (CSV conversion), GitHub Actions (deployment), and Azure Functions (optional backend).
 - **Input:** five selected players, one for each of the five lineup slots (PG, SG, SF, PF, C).
 - **Output:** projected ratings for the lineup, an optimal-usage report with switchable system options, a per-player performance table, a simulated net-rating curve, and a detailed profile and 3D shape graph for any selected player.
